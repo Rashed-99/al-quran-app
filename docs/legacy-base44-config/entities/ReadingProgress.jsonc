@@ -1,0 +1,92 @@
+{
+  "name": "ReadingProgress",
+  "type": "object",
+  "properties": {
+    "current_surah": {
+      "type": "number",
+      "description": "Current surah number"
+    },
+    "current_verse": {
+      "type": "number",
+      "description": "Current verse number"
+    },
+    "total_verses_read": {
+      "type": "number",
+      "description": "Total verses read all time"
+    },
+    "total_pages_read": {
+      "type": "number",
+      "description": "Total pages read (approx 15 verses = 1 page)"
+    },
+    "total_time_minutes": {
+      "type": "number",
+      "description": "Total reading time in minutes"
+    },
+    "total_hasanat": {
+      "type": "number",
+      "description": "Total hasanat earned (10 per letter)"
+    },
+    "current_streak": {
+      "type": "number",
+      "description": "Current consecutive days streak"
+    },
+    "longest_streak": {
+      "type": "number",
+      "description": "Longest streak achieved"
+    },
+    "last_read_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Last date the user read"
+    },
+    "daily_goal_minutes": {
+      "type": "number",
+      "description": "Daily reading goal in minutes"
+    },
+    "daily_goal_verses": {
+      "type": "number",
+      "description": "Daily reading goal in verses"
+    },
+    "today_verses_read": {
+      "type": "number",
+      "description": "Verses read today"
+    },
+    "today_time_minutes": {
+      "type": "number",
+      "description": "Time read today in minutes"
+    },
+    "weekly_progress": {
+      "type": "array",
+      "description": "Array of 7 booleans for each day of the week",
+      "items": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "date": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [],
+  "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

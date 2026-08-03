@@ -1,0 +1,99 @@
+erDiagram
+    USERS ||--o| READING_PROGRESS : has
+    USERS ||--o{ FAVORITE_VERSES : has
+    USERS ||--o{ DAILY_LOGS : has
+    USERS ||--o{ GROUPS : administers
+    USERS ||--o{ GROUP_MEMBERS : joins
+    USERS ||--o{ GROUP_PROGRESS : logs
+    USERS ||--o{ CONVERSATIONS : starts
+    GROUPS ||--o{ GROUP_MEMBERS : has
+    GROUPS ||--o{ GROUP_PROGRESS : tracks
+    CONVERSATIONS ||--o{ MESSAGES : contains
+
+    USERS {
+        uuid id PK
+        text email UK
+        text password_hash
+        text username
+        int refresh_token_version
+        timestamp created_at
+        timestamp updated_at
+    }
+    READING_PROGRESS {
+        uuid id PK
+        uuid user_id FK "unique"
+        int current_surah
+        int current_verse
+        int total_verses_read
+        int total_pages_read
+        int total_time_minutes
+        bigint total_hasanat
+        int current_streak
+        int longest_streak
+        date last_read_date
+        int daily_goal_minutes
+        int daily_goal_verses
+        int today_verses_read
+        int today_time_minutes
+        jsonb weekly_progress
+    }
+    FAVORITE_VERSES {
+        uuid id PK
+        uuid user_id FK
+        int surah_number
+        text surah_name
+        int verse_number
+        text arabic_text
+        text translation
+        text notes
+    }
+    DAILY_LOGS {
+        uuid id PK
+        uuid user_id FK
+        date date
+        int verses_read
+        int time_minutes
+        bigint hasanat_earned
+        boolean goal_completed
+    }
+    GROUPS {
+        uuid id PK
+        text name
+        text description
+        text invite_code UK
+        uuid admin_id FK
+    }
+    GROUP_MEMBERS {
+        uuid id PK
+        uuid group_id FK
+        uuid user_id FK
+        timestamp joined_at
+    }
+    GROUP_PROGRESS {
+        uuid id PK
+        uuid group_id FK
+        uuid user_id FK
+        date date
+        int verses_read
+        int time_minutes
+    }
+    CONVERSATIONS {
+        uuid id PK
+        uuid user_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+    MESSAGES {
+        uuid id PK
+        uuid conversation_id FK
+        text role
+        text content
+        timestamp created_at
+    }
+    TAFSIR {
+        uuid id PK
+        int surah_number
+        int verse_number
+        text source
+        text text
+    }

@@ -1,0 +1,49 @@
+{
+  "name": "FavoriteVerse",
+  "type": "object",
+  "properties": {
+    "surah_number": {
+      "type": "number",
+      "description": "Surah number"
+    },
+    "surah_name": {
+      "type": "string",
+      "description": "Surah name in English"
+    },
+    "verse_number": {
+      "type": "number",
+      "description": "Verse number"
+    },
+    "arabic_text": {
+      "type": "string",
+      "description": "Arabic text of the verse"
+    },
+    "translation": {
+      "type": "string",
+      "description": "Translation of the verse"
+    },
+    "notes": {
+      "type": "string",
+      "description": "User notes on this verse"
+    }
+  },
+  "required": [
+    "surah_number",
+    "verse_number",
+    "arabic_text"
+  ],
+  "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

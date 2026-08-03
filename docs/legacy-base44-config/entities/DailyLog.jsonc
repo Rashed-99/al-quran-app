@@ -1,0 +1,44 @@
+{
+  "name": "DailyLog",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the log"
+    },
+    "verses_read": {
+      "type": "number",
+      "description": "Verses read on this day"
+    },
+    "time_minutes": {
+      "type": "number",
+      "description": "Time spent reading in minutes"
+    },
+    "hasanat_earned": {
+      "type": "number",
+      "description": "Hasanat earned on this day"
+    },
+    "goal_completed": {
+      "type": "boolean",
+      "description": "Whether daily goal was completed"
+    }
+  },
+  "required": [
+    "date"
+  ],
+  "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

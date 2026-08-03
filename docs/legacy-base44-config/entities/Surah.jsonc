@@ -1,0 +1,79 @@
+{
+  "name": "Surah",
+  "type": "object",
+  "properties": {
+    "number": {
+      "type": "number",
+      "description": "Surah number (1-114)"
+    },
+    "name_arabic": {
+      "type": "string",
+      "description": "Arabic name of the surah"
+    },
+    "name_english": {
+      "type": "string",
+      "description": "English transliteration"
+    },
+    "name_translation": {
+      "type": "string",
+      "description": "English meaning of the name"
+    },
+    "revelation_type": {
+      "type": "string",
+      "enum": [
+        "Meccan",
+        "Medinan"
+      ],
+      "description": "Place of revelation"
+    },
+    "total_verses": {
+      "type": "number",
+      "description": "Total number of verses"
+    },
+    "verses": {
+      "type": "array",
+      "description": "Array of verse objects",
+      "items": {
+        "type": "object",
+        "properties": {
+          "verse_number": {
+            "type": "number"
+          },
+          "arabic_text": {
+            "type": "string"
+          },
+          "translation": {
+            "type": "string"
+          },
+          "transliteration": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "number",
+    "name_arabic",
+    "name_english",
+    "total_verses"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

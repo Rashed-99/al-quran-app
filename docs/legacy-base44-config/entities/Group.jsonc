@@ -1,0 +1,76 @@
+{
+  "name": "Group",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Group name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Group description"
+    },
+    "invite_code": {
+      "type": "string",
+      "description": "Unique code to join the group"
+    },
+    "members": {
+      "type": "array",
+      "description": "Array of member emails",
+      "items": {
+        "type": "string"
+      }
+    },
+    "admin_email": {
+      "type": "string",
+      "description": "Email of the group admin"
+    }
+  },
+  "required": [
+    "name",
+    "invite_code",
+    "admin_email"
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "$or": [
+        {
+          "data.members": "{{user.email}}"
+        },
+        {
+          "data.admin_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.admin_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.admin_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

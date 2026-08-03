@@ -1,0 +1,78 @@
+workflows:
+  ios-capacitor-release:
+    name: iOS Capacitor Release
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    environment:
+      node: 20
+      vars:
+        # TODO: must match capacitor.config.json's "appId" exactly
+        BUNDLE_ID: "com.yourname.alquran"
+        # TODO: your deployed Render backend URL - baked into the build,
+        # the native app can't reach localhost or read .env.local
+        VITE_API_BASE_URL: "https://your-backend.onrender.com"
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: $BUNDLE_ID
+
+    integrations:
+      # Name must match what you called the integration in Codemagic's
+      # dashboard under Teams -> Integrations -> App Store Connect
+      # (see docs/04_DEPLOYMENT_GUIDE.md step 5b.2)
+      app_store_connect: appstore_credentials
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+      cancel_previous_builds: true
+
+    scripts:
+      - name: Install frontend dependencies
+        script: |
+          cd frontend
+          npm install
+
+      - name: Build web app
+        script: |
+          cd frontend
+          npm run build
+
+      - name: Add iOS platform if missing, then sync
+        script: |
+          cd frontend
+          test -d ios || npx cap add ios
+          npx cap sync ios
+
+      - name: Install CocoaPods dependencies
+        script: |
+          cd frontend/ios/App
+          pod install
+
+      - name: Set up code signing
+        script: |
+          cd frontend
+          xcode-project use-profiles
+
+      - name: Build .ipa
+        script: |
+          cd frontend
+          xcode-project build-ipa \
+            --workspace ios/App/App.xcworkspace \
+            --scheme App
+
+    artifacts:
+      - frontend/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        # Flip to true once you're confident in the pipeline and want
+        # every push to main to go straight to App Store review. Leave
+        # false while testing - TestFlight-only is the safer default.
+        submit_to_app_store: false

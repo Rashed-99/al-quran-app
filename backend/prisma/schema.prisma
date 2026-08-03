@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TafsirSource {
+  ibnkathir
+  jalalayn
+  saadi
+}
+
+enum MessageRole {
+  user
+  assistant
+}
+
+model User {
+  id                 String   @id @default(uuid())
+  email              String   @unique
+  passwordHash       String   @map("password_hash")
+  username           String
+  refreshTokenVersion Int     @default(0) @map("refresh_token_version")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  readingProgress ReadingProgress?
+  favoriteVerses  FavoriteVerse[]
+  dailyLogs       DailyLog[]
+  adminOfGroups   Group[]          @relation("GroupAdmin")
+  groupMemberships GroupMember[]
+  groupProgress   GroupProgress[]
+  conversations   Conversation[]
+
+  @@map("users")
+}
+
+model ReadingProgress {
+  id                 String   @id @default(uuid())
+  userId             String   @unique @map("user_id")
+  currentSurah       Int?     @map("current_surah")
+  currentVerse       Int?     @map("current_verse")
+  totalVersesRead    Int      @default(0) @map("total_verses_read")
+  totalPagesRead     Int      @default(0) @map("total_pages_read")
+  totalTimeMinutes   Int      @default(0) @map("total_time_minutes")
+  totalHasanat       BigInt   @default(0) @map("total_hasanat")
+  currentStreak      Int      @default(0) @map("current_streak")
+  longestStreak      Int      @default(0) @map("longest_streak")
+  lastReadDate       DateTime? @map("last_read_date") @db.Date
+  dailyGoalMinutes   Int      @default(10) @map("daily_goal_minutes")
+  dailyGoalVerses    Int      @default(10) @map("daily_goal_verses")
+  todayVersesRead    Int      @default(0) @map("today_verses_read")
+  todayTimeMinutes   Int      @default(0) @map("today_time_minutes")
+  weeklyProgress     Json     @default("[]") @map("weekly_progress")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("reading_progress")
+}
+
+model FavoriteVerse {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  surahNumber Int      @map("surah_number")
+  surahName   String   @map("surah_name")
+  verseNumber Int      @map("verse_number")
+  arabicText  String   @map("arabic_text")
+  translation String
+  notes       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@unique([userId, surahNumber, verseNumber], name: "unique_user_verse_favorite")
+  @@map("favorite_verses")
+}
+
+model DailyLog {
+  id            String   @id @default(uuid())
+  userId        String   @map("user_id")
+  date          DateTime @db.Date
+  versesRead    Int      @default(0) @map("verses_read")
+  timeMinutes   Int      @default(0) @map("time_minutes")
+  hasanatEarned BigInt   @default(0) @map("hasanat_earned")
+  goalCompleted Boolean  @default(false) @map("goal_completed")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date], name: "unique_user_date_log")
+  @@index([userId, date])
+  @@map("daily_logs")
+}
+
+model Group {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  inviteCode  String   @unique @map("invite_code")
+  adminId     String   @map("admin_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  admin       User            @relation("GroupAdmin", fields: [adminId], references: [id], onDelete: Cascade)
+  members     GroupMember[]
+  progress    GroupProgress[]
+
+  @@index([adminId])
+  @@map("groups")
+}
+
+model GroupMember {
+  id       String   @id @default(uuid())
+  groupId  String   @map("group_id")
+  userId   String   @map("user_id")
+  joinedAt DateTime @default(now()) @map("joined_at")
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId], name: "unique_group_member")
+  @@index([userId])
+  @@map("group_members")
+}
+
+model GroupProgress {
+  id          String   @id @default(uuid())
+  groupId     String   @map("group_id")
+  userId      String   @map("user_id")
+  date        DateTime @db.Date
+  versesRead  Int      @default(0) @map("verses_read")
+  timeMinutes Int      @default(0) @map("time_minutes")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId, date], name: "unique_group_user_date")
+  @@index([groupId, date])
+  @@map("group_progress")
+}
+
+model Conversation {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@index([userId])
+  @@map("conversations")
+}
+
+model Message {
+  id             String      @id @default(uuid())
+  conversationId String      @map("conversation_id")
+  role           MessageRole
+  content        String
+  createdAt      DateTime    @default(now()) @map("created_at")
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@map("messages")
+}
+
+model Tafsir {
+  id          String       @id @default(uuid())
+  surahNumber Int          @map("surah_number")
+  verseNumber Int          @map("verse_number")
+  source      TafsirSource
+  text        String
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  @@unique([surahNumber, verseNumber, source], name: "unique_tafsir_entry")
+  @@index([surahNumber, verseNumber])
+  @@map("tafsir")
+}
