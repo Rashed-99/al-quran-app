@@ -255,22 +255,22 @@ export default function StandaloneReader() {
               </Button>
             </div>
 
-            {/* Arabic Text - IndoPak Style (PDMS Saleem QuranFont) */}
+            {/* Arabic Text - IndoPak Style (IndoPak Nastaleeq) */}
             <div className="bg-slate-900 dark:bg-slate-950 rounded-3xl shadow-lg border border-slate-800 p-8 md:p-12 mb-6">
               {currentVerse === 1 && currentSurah !== 1 && currentSurah !== 9 && (
                 <p
                   className="text-xl md:text-2xl text-center text-white/70 pb-6 select-none"
-                  style={{ fontFamily: "'PDMS Saleem QuranFont', 'Al Mushaf', serif" }}
+                  style={{ fontFamily: "'IndoPak Nastaleeq', 'Al Mushaf', serif" }}
                   dir="rtl"
                 >
                   بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
                 </p>
               )}
               <p 
-                className="text-3xl md:text-4xl lg:text-5xl text-center text-white leading-[2.5]"
+                className="text-3xl md:text-4xl lg:text-5xl text-center text-white leading-[3.1]"
                 style={{ 
-                  fontFamily: "'PDMS Saleem QuranFont', 'Al Mushaf', serif",
-                  lineHeight: 2.5
+                  fontFamily: "'IndoPak Nastaleeq', 'Al Mushaf', serif",
+                  lineHeight: 3.1
                 }}
                 dir="rtl"
               >

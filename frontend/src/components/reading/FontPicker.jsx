@@ -10,12 +10,6 @@ export const FONTS = [
     lineHeight: 2.5,
   },
   {
-    id: 'pdms-saleem',
-    name: 'PDMS Saleem',
-    fontFamily: "'PDMS Saleem QuranFont', serif",
-    lineHeight: 2.8,
-  },
-  {
     id: 'madina',
     name: 'Madina (Amiri Quran)',
     fontFamily: "'Amiri Quran', 'Amiri', serif",
@@ -24,8 +18,10 @@ export const FONTS = [
   {
     id: 'indopak',
     name: 'Indo Pak Script',
-    fontFamily: "'PDMS Saleem QuranFont', 'Al Mushaf', serif",
-    lineHeight: 2.8,
+    fontFamily: "'IndoPak Nastaleeq', 'Al Mushaf', serif",
+    // Nastaleeq-style IndoPak fonts stack diacritics more vertically than
+    // Uthmani-style fonts, so they read cleanly with more line-height.
+    lineHeight: 3.1,
   },
   {
     id: 'scheherazade',

@@ -2,6 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * IndoPak Nastaleeq - the actively-maintained font used by Quran.com and
+ * QuranWBW.com, sourced from the Quranic Universal Library (qul.tarteel.ai).
+ * This is the piece that was missing entirely before: every font option in
+ * FontPicker.jsx referenced a font-family name with no @font-face behind it
+ * anywhere in the project, so the browser silently fell back to a generic
+ * system serif for ALL fonts, not just this one - explaining why it looked
+ * nothing like a proper IndoPak typeface.
+ *
+ * REQUIRED MANUAL STEP: download the font files and place them at the paths
+ * below - see docs/05_FONT_SETUP.md for the exact source and license terms
+ * (free to use, but requires credit and no reselling/altering - compatible
+ * with this app's free/non-commercial status).
+ */
+@font-face {
+  font-family: 'IndoPak Nastaleeq';
+  src:
+    url('/fonts/IndoPakNastaleeq-Regular.woff2') format('woff2'),
+    url('/fonts/IndoPakNastaleeq-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+ * Amiri Quran - Uthmani-style Quran typeface by Khaled Hosny, OFL licensed.
+ * Source: https://github.com/aliftype/amiri/releases (download AmiriQuran.ttf)
+ * See docs/05_FONT_SETUP.md for the exact download + placement steps.
+ */
+@font-face {
+  font-family: 'Amiri Quran';
+  src: url('/fonts/AmiriQuran-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+ * Kitab - a Quran-specific Naskh font (Scheherazade-derived), extended with
+ * Quranic Unicode ligatures/honorifics. OFL-derived license.
+ * Source: https://github.com/nuqayah/kitab-font
+ * See docs/05_FONT_SETUP.md for the exact download + placement steps.
+ */
+@font-face {
+  font-family: 'Kitab';
+  src: url('/fonts/Kitab-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
