@@ -6,6 +6,15 @@ const TRANSLATION_EDITION = 'en.ahmedraza';
 const ARABIC_EDITION = 'quran-simple';
 const AUDIO_EDITION = 'ar.alafasy';
 const TAFSIR_EDITION = 'en.maududi';
+// NOTE: this is the commonly-documented alquran.cloud transliteration
+// edition identifier, but I could not get a live confirmation of the
+// exact string against the API's /edition endpoint in the environment
+// this was built in (tooling limitation, not a guess made carelessly -
+// see fetchTransliteration below for how this is guarded). If
+// transliteration doesn't appear after deploying, open browser DevTools
+// -> Network, find the failing request, and check whether it's a 404 -
+// that would confirm the identifier needs adjusting.
+const TRANSLITERATION_EDITION = 'en.transliteration';
 
 // The `quran-simple` Arabic edition bakes the Bismillah into the START of
 // ayah 1's text for every surah except At-Tawbah (9) - Al-Fatiha (1) is the
@@ -37,6 +46,26 @@ function stripLeadingBismillah(text, surahNumber, ayahNumberInSurah) {
   return text.replace(BISMILLAH_PATTERN, '');
 }
 
+// Fetched as a completely separate, independently-failing request from the
+// Arabic + translation call - deliberately, so that if TRANSLITERATION_EDITION
+// turns out to be wrong or unavailable, the app's core reading experience
+// (Arabic text + translation, both already verified working) is entirely
+// unaffected. Returns an array of transliteration strings indexed by ayah
+// position, or null if the fetch fails for any reason.
+async function fetchTransliteration(surahNumber) {
+  try {
+    const response = await fetch(`${BASE_URL}/surah/${surahNumber}/${TRANSLITERATION_EDITION}`);
+    const data = await response.json();
+    if (data.code === 200 && Array.isArray(data.data?.ayahs)) {
+      return data.data.ayahs.map((ayah) => ayah.text || '');
+    }
+    return null;
+  } catch (error) {
+    console.warn('Transliteration unavailable for surah', surahNumber, error);
+    return null;
+  }
+}
+
 export const QuranAPI = {
   // Get all surahs list
   async getSurahList() {
@@ -50,9 +79,10 @@ export const QuranAPI = {
 
   // Get a specific surah with Arabic and translation
   async getSurah(surahNumber) {
-    const response = await fetch(
-      `${BASE_URL}/surah/${surahNumber}/editions/${ARABIC_EDITION},${TRANSLATION_EDITION}`
-    );
+    const [response, transliterations] = await Promise.all([
+      fetch(`${BASE_URL}/surah/${surahNumber}/editions/${ARABIC_EDITION},${TRANSLATION_EDITION}`),
+      fetchTransliteration(surahNumber),
+    ]);
     const data = await response.json();
     if (data.code === 200) {
       const [arabic, translation] = data.data;
@@ -68,6 +98,7 @@ export const QuranAPI = {
           globalNumber: ayah.number,
           arabic: stripLeadingBismillah(ayah.text, arabic.number, ayah.numberInSurah),
           translation: translation.ayahs[index]?.text || '',
+          transliteration: transliterations?.[index] || '',
           juz: ayah.juz,
           page: ayah.page,
           audio: `https://cdn.islamic.network/quran/audio/128/${AUDIO_EDITION}/${ayah.number}.mp3`

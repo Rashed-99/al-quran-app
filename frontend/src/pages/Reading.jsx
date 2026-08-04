@@ -63,6 +63,24 @@ export default function Reading() {
   // server-side totals) instead of re-sending absolute counts.
   const persistedVersesRef = useRef(0);
   const persistedTimeRef = useRef(0);
+  // Mirror the latest state into refs so the stable (mount-once) autosave
+  // interval and page-unload listeners always read CURRENT values instead
+  // of a frozen closure from whenever they were set up. This is the fix
+  // for the real bug: previously these were plain state closures, and the
+  // autosave interval's useEffect had [sessionVerses, sessionTime,
+  // currentSurah, currentVerse] as deps - meaning it was torn down and
+  // recreated on every single verse turn, so the 30s timer almost never
+  // actually reached 30 seconds during active reading.
+  const currentSurahRef = useRef(1);
+  const currentVerseRef = useRef(1);
+  const sessionVersesRef = useRef(0);
+  const sessionTimeRef = useRef(0);
+  const sessionHasanatRef = useRef(0);
+  useEffect(() => { currentSurahRef.current = currentSurah; }, [currentSurah]);
+  useEffect(() => { currentVerseRef.current = currentVerse; }, [currentVerse]);
+  useEffect(() => { sessionVersesRef.current = sessionVerses; }, [sessionVerses]);
+  useEffect(() => { sessionTimeRef.current = sessionTime; }, [sessionTime]);
+  useEffect(() => { sessionHasanatRef.current = sessionHasanat; }, [sessionHasanat]);
   const [selectedFont, setSelectedFont] = useState(() => localStorage.getItem('quranFont') || 'kitab');
   const [showFontPicker, setShowFontPicker] = useState(false);
 
@@ -196,11 +214,14 @@ export default function Reading() {
     f => f.surah_number === currentSurah && f.verse_number === currentVerse
   );
 
-  // Auto-save progress every 30 seconds
+  // Auto-save progress every 30 seconds. Set up ONCE (empty deps) so it's
+  // never torn down/recreated by verse navigation - reads current values
+  // via refs (see above) rather than closing over state directly, which is
+  // what makes a mount-once interval safe from stale data.
   useEffect(() => {
     autoSaveTimerRef.current = setInterval(() => {
-      if (progressRef.current && sessionVerses > 0) {
-        autoSaveProgress();
+      if (progressRef.current) {
+        flushProgress();
       }
     }, 30000); // 30 seconds
 
@@ -209,49 +230,57 @@ export default function Reading() {
         clearInterval(autoSaveTimerRef.current);
       }
     };
-  }, [sessionVerses, sessionTime, currentSurah, currentVerse]);
+  }, []);
 
-  // Save position (bookmark only, no totals change) when verse changes (debounced)
+  // Save position (bookmark only, no totals change) immediately on verse
+  // change - no debounce. Position saves are a single cheap PATCH with two
+  // integers; the previous debounce-with-cleanup approach meant navigating
+  // away within 2 seconds of the last verse change (a completely normal
+  // "read last verse, tap back" flow) silently cancelled the save before
+  // it ever fired.
   useEffect(() => {
-    const debounceTimer = setTimeout(() => {
-      if (progressRef.current && currentSurah && currentVerse) {
-        saveCurrentPosition();
-      }
-    }, 2000); // 2 second debounce
-
-    return () => clearTimeout(debounceTimer);
+    if (progressRef.current && currentSurah && currentVerse) {
+      saveCurrentPosition();
+    }
   }, [currentSurah, currentVerse]);
 
-  // Save on page unload/visibility change
+  // Save on page unload/visibility change/backgrounding. 'pagehide' is
+  // included alongside 'beforeunload' because beforeunload is unreliable
+  // on mobile browsers and Capacitor WebViews (the exact environment this
+  // app runs in as an iOS app) - pagehide fires much more consistently
+  // when an app is backgrounded or a tab is closed on mobile.
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden' && progressRef.current) {
-        autoSaveProgress();
+        flushProgress();
       }
     };
 
-    const handleBeforeUnload = () => {
+    const handleUnload = () => {
       if (progressRef.current) {
-        autoSaveProgress();
+        flushProgress();
       }
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('beforeunload', handleUnload);
+    window.addEventListener('pagehide', handleUnload);
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('beforeunload', handleUnload);
+      window.removeEventListener('pagehide', handleUnload);
     };
   }, []);
 
   const saveCurrentPosition = async () => {
     if (!progressRef.current) return;
     try {
-      await progressApi.savePosition({
-        current_surah: currentSurah,
-        current_verse: currentVerse,
+      const updated = await progressApi.savePosition({
+        current_surah: currentSurahRef.current,
+        current_verse: currentVerseRef.current,
       });
+      progressRef.current = updated;
     } catch (error) {
       console.error('Error saving position:', error);
     }
@@ -262,37 +291,54 @@ export default function Reading() {
    * delta via logReadingSession - which atomically bumps ReadingProgress
    * totals + streak, today's DailyLog, and GroupProgress for every group
    * this user belongs to, all server-side in one transaction.
+   *
+   * Reads from refs (not state directly) so it's safe to call from the
+   * mount-once autosave interval and page-unload listeners without a
+   * stale-closure risk.
    */
   const persistSessionDelta = async () => {
-    const deltaVerses = sessionVerses - persistedVersesRef.current;
-    const deltaTime = sessionTime - persistedTimeRef.current;
+    const deltaVerses = sessionVersesRef.current - persistedVersesRef.current;
+    const deltaTime = sessionTimeRef.current - persistedTimeRef.current;
 
     if (deltaVerses <= 0 && deltaTime <= 0) return null;
 
     const updated = await progressApi.logReadingSession({
       verses_read: Math.max(deltaVerses, 0),
       time_minutes: Math.max(deltaTime, 0),
-      hasanat_earned: deltaVerses > 0 ? sessionHasanat : undefined,
-      current_surah: currentSurah,
-      current_verse: currentVerse,
+      hasanat_earned: deltaVerses > 0 ? sessionHasanatRef.current : undefined,
+      current_surah: currentSurahRef.current,
+      current_verse: currentVerseRef.current,
       group_ids: myGroupIdsRef.current,
     });
 
-    persistedVersesRef.current = sessionVerses;
-    persistedTimeRef.current = sessionTime;
+    persistedVersesRef.current = sessionVersesRef.current;
+    persistedTimeRef.current = sessionTimeRef.current;
 
     setProgress(updated);
     progressRef.current = updated;
     return updated;
   };
 
-  const autoSaveProgress = async () => {
+  /**
+   * The single entrypoint used by the autosave timer, visibility/unload
+   * listeners, and the close button: persist a verses/time delta if there
+   * is one, and if there isn't (e.g. the user only browsed backward to
+   * review verses without reading forward), still bookmark the current
+   * position so re-opening the app resumes in the right place. Previously
+   * handleClose only called persistSessionDelta and only when
+   * sessionVerses > 0, which meant browsing backward then closing saved
+   * nothing at all - not even the position.
+   */
+  const flushProgress = async () => {
     if (!progressRef.current) return;
     try {
-      await persistSessionDelta();
+      const result = await persistSessionDelta();
+      if (!result) {
+        await saveCurrentPosition();
+      }
       setLastSaved(new Date());
     } catch (error) {
-      console.error('Error auto-saving:', error);
+      console.error('Error flushing progress:', error);
     }
   };
 
@@ -399,14 +445,11 @@ export default function Reading() {
   };
 
   const handleClose = async () => {
-    // Save final progress before leaving
-    if (progressRef.current && sessionVerses > 0) {
-      try {
-        await persistSessionDelta();
-      } catch (error) {
-        console.error('Error saving on close:', error);
-      }
-    }
+    // Always flush - previously this only ran when sessionVerses > 0,
+    // which meant browsing backward through verses to review them (which
+    // doesn't increment sessionVerses) then closing saved nothing at all,
+    // not even the current position.
+    await flushProgress();
     navigate(createPageUrl('Home'));
   };
 

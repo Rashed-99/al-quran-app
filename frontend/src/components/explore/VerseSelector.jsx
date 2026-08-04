@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, Play, Loader2, BookOpen, Bookmark } from 'lucide-react';
+import { X, Play, Loader2, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import QuranAPI from '@/components/reading/QuranAPI';
@@ -33,8 +33,8 @@ export default function VerseSelector({
     }
   };
 
-  const handleStart = (standalone = false) => {
-    onSelect(surah.number, selectedVerse, standalone);
+  const handleStart = () => {
+    onSelect(surah.number, selectedVerse);
   };
 
   if (!surah) return null;
@@ -143,9 +143,9 @@ export default function VerseSelector({
             <div className="bg-slate-900 dark:bg-slate-950 rounded-2xl p-4 mb-6">
               <p className="text-sm text-slate-400 mb-2">Preview</p>
               <p 
-                className="text-2xl text-right text-white leading-[2.5]"
+                className="text-2xl text-right text-white leading-[2.5] mb-3"
                 style={{ 
-                  fontFamily: "'PDMS Saleem QuranFont', 'Al Mushaf', serif",
+                  fontFamily: "'IndoPak Nastaleeq', 'Amiri Quran', serif",
                   lineHeight: 2.5
                 }}
                 dir="rtl"
@@ -153,25 +153,22 @@ export default function VerseSelector({
                 {surahData.verses[selectedVerse - 1].arabic.substring(0, 80)}
                 <span className="text-amber-500 mx-1">۝</span>
               </p>
+              {surahData.verses[selectedVerse - 1].translation && (
+                <p className="text-sm text-slate-300 leading-relaxed border-t border-slate-800 pt-3">
+                  {surahData.verses[selectedVerse - 1].translation}
+                </p>
+              )}
             </div>
           )}
 
-          {/* Start Buttons */}
-          <div className="space-y-3 pb-4">
+          {/* Start Button */}
+          <div className="pb-4">
             <Button
-              onClick={() => handleStart(false)}
+              onClick={handleStart}
               className="w-full py-6 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-lg font-semibold"
             >
-              <Bookmark className="w-5 h-5 mr-2" />
-              Continue Reading (Track Progress)
-            </Button>
-            <Button
-              onClick={() => handleStart(true)}
-              variant="outline"
-              className="w-full py-5 rounded-2xl border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
-            >
               <BookOpen className="w-5 h-5 mr-2" />
-              Standalone Mode (No Tracking)
+              Read Verse
             </Button>
           </div>
         </div>

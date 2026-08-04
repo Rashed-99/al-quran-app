@@ -85,13 +85,12 @@ export default function Explore() {
     }
   };
 
-  const handleVerseSelect = (surahNumber, verseNumber, standalone = false) => {
+  const handleVerseSelect = (surahNumber, verseNumber) => {
     setSelectedSurah(null);
-    if (standalone) {
-      navigate(createPageUrl(`StandaloneReader?surah=${surahNumber}&verse=${verseNumber}`));
-    } else {
-      navigate(createPageUrl(`Reading?surah=${surahNumber}&verse=${verseNumber}`));
-    }
+    // Explore is a lookup/search tool, not the tracked daily-reading flow -
+    // it always opens the standalone reader (no progress/streak/hasanat
+    // side effects). Continuous tracked reading still lives on Home -> Reading.
+    navigate(createPageUrl(`StandaloneReader?surah=${surahNumber}&verse=${verseNumber}`));
   };
 
   return (
