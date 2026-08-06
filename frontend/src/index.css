@@ -126,6 +126,51 @@
   }
 }
 
+/*
+ * App-specific tokens for the violet-brand "dark card" aesthetic used
+ * throughout Home, Reading, and their child components. These pages were
+ * built with hardcoded hex colors in inline styles (e.g.
+ * style={{ background: '#121212' }}), which is why the light/dark toggle
+ * in Settings previously only affected pages built with plain Tailwind
+ * dark: classes - hardcoded inline hex never responds to a class toggle
+ * no matter what. Referencing these CSS variables from inline styles
+ * (var(--app-bg) etc.) fixes that without needing to rewrite every
+ * className to Tailwind utilities.
+ */
+:root {
+  --app-bg: #FAF9FC;
+  --app-bg-gradient: linear-gradient(180deg, #EDE9FE 0%, #F5F3FF 50%, #FAF9FC 100%);
+  --app-card-bg: #FFFFFF;
+  --app-card-bg-alt: #F3F1F8;
+  --app-card-border: rgba(124, 58, 237, 0.10);
+  --app-text-primary: #1E1B2E;
+  --app-text-secondary: #6B6478;
+  --app-text-tertiary: #9591A3;
+  --app-pill-bg: rgba(124, 58, 237, 0.07);
+  --app-pill-border: rgba(124, 58, 237, 0.12);
+  --app-divider: rgba(124, 58, 237, 0.10);
+  --app-accent: #7B61FF;
+  --app-accent-soft: rgba(123, 97, 255, 0.10);
+  --app-bar-bg: rgba(250, 249, 252, 0.75);
+}
+
+.dark {
+  --app-bg: #121212;
+  --app-bg-gradient: linear-gradient(180deg, #2a1a4a 0%, #1a1230 45%, #121212 100%);
+  --app-card-bg: #1C1C1E;
+  --app-card-bg-alt: #18181A;
+  --app-card-border: rgba(255, 255, 255, 0.06);
+  --app-text-primary: #FFFFFF;
+  --app-text-secondary: #A0A0A5;
+  --app-text-tertiary: #6E6E73;
+  --app-pill-bg: rgba(255, 255, 255, 0.08);
+  --app-pill-border: rgba(255, 255, 255, 0.10);
+  --app-divider: rgba(255, 255, 255, 0.06);
+  --app-accent: #7B61FF;
+  --app-accent-soft: rgba(123, 97, 255, 0.15);
+  --app-bar-bg: rgba(18, 18, 18, 0.55);
+}
+
 
 
 @layer base {

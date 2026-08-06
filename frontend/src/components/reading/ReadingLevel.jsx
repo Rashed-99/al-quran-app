@@ -37,7 +37,7 @@ export default function ReadingLevel({ timeMinutes, secondsElapsed = 0 }) {
       {/* Header row */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <h3 className="font-bold text-white text-sm select-none">{currentLevel.name}</h3>
+          <h3 className="font-bold text-sm select-none" style={{ color: 'var(--app-text-primary)' }}>{currentLevel.name}</h3>
           <span
             className="text-[10px] font-bold px-2 py-0.5 rounded-full select-none"
             style={{ background: 'rgba(123,97,255,0.2)', color: '#a78bfa' }}
@@ -45,7 +45,7 @@ export default function ReadingLevel({ timeMinutes, secondsElapsed = 0 }) {
             Lvl {String(levelIndex).padStart(2, '0')}
           </span>
         </div>
-        <p className="text-xs text-slate-400 select-none">Total: {timeMinutes} min</p>
+        <p className="text-xs select-none" style={{ color: 'var(--app-text-tertiary)' }}>Total: {timeMinutes} min</p>
       </div>
 
       {/* Digital countdown timer */}
@@ -73,7 +73,7 @@ export default function ReadingLevel({ timeMinutes, secondsElapsed = 0 }) {
       )}
 
       {/* Progress bar */}
-      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--app-pill-bg)' }}>
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${Math.min(progressToNext, 100)}%` }}
@@ -85,8 +85,8 @@ export default function ReadingLevel({ timeMinutes, secondsElapsed = 0 }) {
 
       {/* Progress labels */}
       <div className="flex items-center justify-between mt-2">
-        <span className="text-xs text-slate-400 select-none">{timeMinutes}/{nextLevel?.minMinutes || timeMinutes}</span>
-        <span className="text-xs text-slate-400 select-none">{Math.round(progressToNext)}%</span>
+        <span className="text-xs select-none" style={{ color: 'var(--app-text-tertiary)' }}>{timeMinutes}/{nextLevel?.minMinutes || timeMinutes}</span>
+        <span className="text-xs select-none" style={{ color: 'var(--app-text-tertiary)' }}>{Math.round(progressToNext)}%</span>
       </div>
     </motion.div>
   );

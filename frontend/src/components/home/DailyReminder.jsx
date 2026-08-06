@@ -166,16 +166,16 @@ export default function DailyReminder({ progress, onReadClick }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.35 }}
         className="mb-6 rounded-3xl p-5"
-        style={{ background: '#18181A', border: '1px solid rgba(255,255,255,0.06)' }}
+        style={{ background: 'var(--app-card-bg)', border: '1px solid var(--app-card-border)' }}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#2D2D35' }}>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'var(--app-card-bg-alt)' }}>
               <Bell className="w-5 h-5 text-violet-400" />
             </div>
             <div>
-              <h3 className="font-semibold text-white text-sm">Daily Reminders</h3>
-              <p className="text-xs" style={{ color: '#A0A0A5' }}>
+              <h3 className="font-semibold text-sm" style={{ color: 'var(--app-text-primary)' }}>Daily Reminders</h3>
+              <p className="text-xs" style={{ color: 'var(--app-text-secondary)' }}>
                 {reminderEnabled && permission === 'granted'
                   ? `On — ${reminderTime}`
                   : permission === 'unsupported'
@@ -188,7 +188,7 @@ export default function DailyReminder({ progress, onReadClick }) {
             onClick={handleToggle}
             disabled={!canNotify}
             className="relative w-12 h-7 rounded-full transition-colors touch-manipulation disabled:opacity-40 shrink-0"
-            style={{ background: reminderEnabled ? '#7B61FF' : '#3A3A3E' }}
+            style={{ background: reminderEnabled ? 'var(--app-accent)' : 'var(--app-card-bg-alt)' }}
           >
             <span className={`absolute top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white shadow transition-all ${
               reminderEnabled ? 'right-0.5' : 'left-0.5'
@@ -205,15 +205,15 @@ export default function DailyReminder({ progress, onReadClick }) {
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <div className="mt-4 pt-4 flex items-center gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                <Clock className="w-4 h-4 text-slate-400" />
-                <label className="text-sm text-slate-300">Reminder time</label>
+              <div className="mt-4 pt-4 flex items-center gap-3" style={{ borderTop: '1px solid var(--app-divider)' }}>
+                <Clock className="w-4 h-4" style={{ color: 'var(--app-text-secondary)' }} />
+                <label className="text-sm" style={{ color: 'var(--app-text-secondary)' }}>Reminder time</label>
                 <input
                   type="time"
                   value={reminderTime}
                   onChange={handleTimeChange}
-                  className="ml-auto px-3 py-1.5 rounded-lg text-sm text-white touch-manipulation"
-                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }}
+                  className="ml-auto px-3 py-1.5 rounded-lg text-sm touch-manipulation"
+                  style={{ background: 'var(--app-pill-bg)', border: '1px solid var(--app-pill-border)', color: 'var(--app-text-primary)' }}
                 />
               </div>
             </motion.div>

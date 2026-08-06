@@ -282,9 +282,11 @@ export default function StandaloneReader() {
 
             {/* Transliteration */}
             {verse.transliteration && (
-              <p className="text-sm text-slate-500 dark:text-slate-400 text-center italic mb-3 px-2">
-                {verse.transliteration}
-              </p>
+              <div className="bg-slate-50 dark:bg-slate-800/30 rounded-2xl px-5 py-3 mb-4">
+                <p className="text-base text-slate-500 dark:text-slate-400 text-center italic">
+                  {verse.transliteration}
+                </p>
+              </div>
             )}
 
             {/* Translation */}

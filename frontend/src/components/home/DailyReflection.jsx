@@ -177,43 +177,43 @@ export default function DailyReflection() {
       className="mb-6"
     >
       {/* Reflection card */}
-      <div className="rounded-3xl p-6 mb-3" style={{ background: '#18181A', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="rounded-3xl p-6 mb-3" style={{ background: 'var(--app-card-bg)', border: '1px solid var(--app-card-border)' }}>
         <div className="flex items-center gap-2 mb-5">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(123,97,255,0.15)' }}>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--app-accent-soft)' }}>
             <Moon className="w-4 h-4 text-violet-400" />
           </div>
-          <h3 className="font-semibold text-white text-sm">Today's Reflection</h3>
-          <span className="text-xs ml-auto" style={{ color: '#A0A0A5' }}>{reflection.surah}</span>
+          <h3 className="font-semibold text-sm" style={{ color: 'var(--app-text-primary)' }}>Today's Reflection</h3>
+          <span className="text-xs ml-auto" style={{ color: 'var(--app-text-secondary)' }}>{reflection.surah}</span>
         </div>
 
         {/* Arabic verse */}
-        <p className="text-2xl text-center text-white mb-4 leading-[2.2]" dir="rtl" style={{ fontFamily: "'Amiri', serif" }}>
+        <p className="text-2xl text-center mb-4 leading-[2.2]" dir="rtl" style={{ fontFamily: "'Amiri', serif", color: 'var(--app-text-primary)' }}>
           {reflection.arabic}
         </p>
 
         {/* Translation */}
-        <p className="text-sm text-center text-slate-300 mb-5 leading-relaxed">
+        <p className="text-sm text-center mb-5 leading-relaxed" style={{ color: 'var(--app-text-secondary)' }}>
           "{reflection.translation}"
         </p>
 
         {/* Reflection question */}
-        <div className="rounded-2xl p-4" style={{ background: 'rgba(123,97,255,0.08)' }}>
+        <div className="rounded-2xl p-4" style={{ background: 'var(--app-accent-soft)' }}>
           <div className="flex items-start gap-2">
             <Quote className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
-            <p className="text-sm text-violet-200 italic leading-relaxed">{reflection.question}</p>
+            <p className="text-sm italic leading-relaxed" style={{ color: 'var(--app-text-primary)', opacity: 0.85 }}>{reflection.question}</p>
           </div>
         </div>
       </div>
 
       {/* Notification toggle */}
-      <div className="rounded-3xl p-5 flex items-center justify-between" style={{ background: '#18181A', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="rounded-3xl p-5 flex items-center justify-between" style={{ background: 'var(--app-card-bg)', border: '1px solid var(--app-card-border)' }}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#2D2D35' }}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'var(--app-card-bg-alt)' }}>
             <Bell className="w-5 h-5 text-violet-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-white text-sm">Reflection Reminders</h3>
-            <p className="text-xs" style={{ color: '#A0A0A5' }}>
+            <h3 className="font-semibold text-sm" style={{ color: 'var(--app-text-primary)' }}>Reflection Reminders</h3>
+            <p className="text-xs" style={{ color: 'var(--app-text-secondary)' }}>
               {isActive
                 ? 'On — daily at 7:00 AM'
                 : canNotify
@@ -226,7 +226,7 @@ export default function DailyReflection() {
           onClick={handleToggle}
           disabled={!canNotify}
           className="relative w-12 h-7 rounded-full transition-colors touch-manipulation disabled:opacity-40 shrink-0"
-          style={{ background: isActive ? '#7B61FF' : '#3A3A3E' }}
+          style={{ background: isActive ? 'var(--app-accent)' : 'var(--app-card-bg-alt)' }}
         >
           <span className={`absolute top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white shadow transition-all ${
             isActive ? 'right-0.5' : 'left-0.5'

@@ -42,7 +42,7 @@ export default function Layout({ children, currentPageName }) {
   }, [currentPageName]);
 
   return (
-    <div className="min-h-screen overscroll-none" style={{ overscrollBehaviorY: 'none', background: '#121212' }}>
+    <div className="min-h-screen overscroll-none" style={{ overscrollBehaviorY: 'none', background: 'var(--app-bg)' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Amiri+Quran&family=Scheherazade+New:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap');
         @font-face {
@@ -53,17 +53,13 @@ export default function Layout({ children, currentPageName }) {
           font-family: 'Al Mushaf';
           src: url('https://cdn.jsdelivr.net/gh/ArabicFonts/al-mushaf@1.0/al-mushaf.ttf') format('truetype');
         }
-        @font-face {
-          font-family: 'Kitab';
-          src: url('https://cdn.jsdelivr.net/gh/nuqayah/kitab-font@master/Kitab-Regular.ttf') format('truetype');
-          font-display: swap;
-        }
-        @font-face {
-          font-family: 'Kitab';
-          src: url('https://cdn.jsdelivr.net/gh/nuqayah/kitab-font@master/Kitab-Bold.ttf') format('truetype');
-          font-weight: bold;
-          font-display: swap;
-        }
+        /* NOTE: 'Kitab' is intentionally NOT declared here - it's declared
+           once in index.css (self-hosted from /fonts/Kitab-Regular.woff2,
+           see docs/05_FONT_SETUP.md). This file previously ALSO declared a
+           'Kitab' @font-face pointing at a different CDN source, which
+           created a naming collision - two @font-face rules for the same
+           family name from different sources is undefined/unpredictable
+           which one wins. Consolidated to the one documented source. */
         .font-arabic {
           font-family: 'Amiri', 'Traditional Arabic', serif;
         }
@@ -101,9 +97,12 @@ export default function Layout({ children, currentPageName }) {
         {children}
       </main>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation - this persists on every page except the
+          immersive reading pages, so it being hardcoded dark regardless of
+          theme was very likely the single biggest reason light mode looked
+          "incomplete" everywhere, including on Settings itself. */}
       {!hideNav && (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 select-none" style={{ paddingBottom: 'env(safe-area-inset-bottom)', background: 'rgba(18,18,18,0.85)', borderTop: '1px solid rgba(255,255,255,0.06)', backdropFilter: 'blur(16px)' }}>
+        <nav className="fixed bottom-0 left-0 right-0 z-50 select-none" style={{ paddingBottom: 'env(safe-area-inset-bottom)', background: 'var(--app-bar-bg)', borderTop: '1px solid var(--app-divider)', backdropFilter: 'blur(16px)' }}>
           <div className="max-w-lg mx-auto px-4">
             <div className="flex items-center justify-around py-2">
               {navItems.map((item) => {
@@ -112,11 +111,8 @@ export default function Layout({ children, currentPageName }) {
                   <Link
                     key={item.name}
                     to={createPageUrl(item.page)}
-                    className={`flex flex-col items-center gap-1 py-2 px-4 rounded-xl transition-all select-none touch-manipulation ${
-                      isActive 
-                        ? 'text-violet-400' 
-                        : 'text-slate-500 hover:text-slate-300'
-                    }`}
+                    className="flex flex-col items-center gap-1 py-2 px-4 rounded-xl transition-all select-none touch-manipulation"
+                    style={{ color: isActive ? '#a78bfa' : 'var(--app-text-tertiary)' }}
                   >
                     <item.icon className={`w-5 h-5 select-none ${isActive ? 'stroke-2' : ''}`} />
                     <span className="text-xs font-medium select-none">{item.name}</span>
