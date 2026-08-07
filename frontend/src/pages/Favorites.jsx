@@ -50,7 +50,7 @@ export default function Favorites() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center dark:bg-slate-900">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="animate-pulse flex flex-col items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-rose-200 dark:bg-rose-800" />
           <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" />
@@ -71,9 +71,9 @@ export default function Favorites() {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-400 to-rose-500 flex items-center justify-center select-none">
             <Heart className="w-5 h-5 text-white select-none" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-white select-none">Favorites</h1>
+          <h1 className="text-2xl font-bold text-[var(--app-text-primary)] select-none">Favorites</h1>
         </div>
-        <p className="text-slate-500 dark:text-slate-400 select-none">{favorites.length} saved verses</p>
+        <p className="text-[var(--app-text-secondary)] select-none">{favorites.length} saved verses</p>
       </motion.div>
 
       {/* Favorites List */}
@@ -87,7 +87,7 @@ export default function Favorites() {
             <BookOpen className="w-10 h-10 text-slate-300 dark:text-slate-600 select-none" />
           </div>
           <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2 select-none">No favorites yet</h2>
-          <p className="text-slate-500 dark:text-slate-400 max-w-xs select-none">
+          <p className="text-[var(--app-text-secondary)] max-w-xs select-none">
             Tap the heart icon while reading to save your favorite verses
           </p>
         </motion.div>
@@ -101,11 +101,11 @@ export default function Favorites() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -100 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden"
+                className="bg-[var(--app-card-bg)] rounded-2xl shadow-sm border border-[var(--app-card-border)] overflow-hidden"
               >
                 {/* Header */}
-                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-700 select-none">
-                  <span className="text-sm font-medium text-violet-600 dark:text-violet-400 select-none">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--app-card-border)] select-none">
+                  <span className="text-sm font-medium text-[var(--app-accent)] select-none">
                     {verse.surah_name} : {verse.verse_number}
                   </span>
                   <div className="flex items-center gap-1">
@@ -113,7 +113,7 @@ export default function Favorites() {
                       variant="ghost"
                       size="icon"
                       onClick={() => handleShare(verse)}
-                      className="w-8 h-8 rounded-full text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 select-none touch-manipulation"
+                      className="w-8 h-8 rounded-full text-[var(--app-text-tertiary)] hover:text-[var(--app-accent)] select-none touch-manipulation"
                     >
                       <Share2 className="w-4 h-4 select-none" />
                     </Button>
@@ -162,15 +162,15 @@ export default function Favorites() {
 
                 {/* Translation - Selectable */}
                 <div className="bg-slate-50 dark:bg-slate-900/50 px-6 py-4">
-                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                  <p className="text-[var(--app-text-secondary)] leading-relaxed">
                     {verse.translation}
                   </p>
                 </div>
 
                 {/* Notes */}
                 {verse.notes && (
-                  <div className="px-6 py-3 border-t border-slate-100 dark:border-slate-700">
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                  <div className="px-6 py-3 border-t border-[var(--app-card-border)]">
+                    <p className="text-sm text-[var(--app-text-secondary)]">
                       <span className="font-medium">Note:</span> {verse.notes}
                     </p>
                   </div>

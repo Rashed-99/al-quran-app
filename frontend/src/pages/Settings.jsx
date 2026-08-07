@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/AuthContext';
 import * as authApi from '@/api/auth';
 import * as progressApi from '@/api/progress';
+import * as notifications from '@/lib/notifications';
 import { 
   User, 
   Target, 
@@ -19,7 +20,9 @@ import {
   AlertTriangle,
   Pencil,
   AtSign,
-  Check
+  Check,
+  Palette,
+  BellRing
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -68,10 +71,163 @@ export default function Settings() {
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dailyGoal, setDailyGoal] = useState(10);
-  const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem('darkMode') === 'true';
+    // Must match Layout.jsx's default exactly (dark unless explicitly set
+    // to 'false') - these two were previously contradictory: this toggle
+    // defaulted to OFF for a new user while Layout.jsx had already applied
+    // dark mode globally, so the Settings toggle didn't reflect what was
+    // actually on screen until the user touched it once.
+    return localStorage.getItem('darkMode') !== 'false';
   });
+  const [themeId, setThemeId] = useState(() => localStorage.getItem('quranTheme') || 'violet');
+  const [showThemeDialog, setShowThemeDialog] = useState(false);
+
+  // --- Notification settings, migrated from DailyReminder.jsx and
+  // DailyReflection.jsx (previously each had its own toggle embedded
+  // directly in the Home page; consolidated here under one Notifications
+  // section, same underlying localStorage keys and scheduling logic so
+  // existing schedules aren't lost by this refactor). ---
+  const [notifPermission, setNotifPermission] = useState('prompt');
+  const [readingReminderEnabled, setReadingReminderEnabled] = useState(
+    () => localStorage.getItem('quranReminderEnabled') === 'true'
+  );
+  const [readingReminderTime, setReadingReminderTime] = useState(
+    () => localStorage.getItem('quranReminderTime') || '08:00'
+  );
+  const [reflectionReminderEnabled, setReflectionReminderEnabled] = useState(
+    () => localStorage.getItem('reflectionNotify') === 'true'
+  );
+  const readingReminderTimerRef = useRef(null);
+  const reflectionReminderTimerRef = useRef(null);
+  const canNotify = notifPermission !== 'unsupported';
+
+  useEffect(() => {
+    notifications.getPermissionStatus().then(setNotifPermission);
+  }, []);
+
+  // Schedule/cancel the reading reminder whenever its settings change.
+  useEffect(() => {
+    if (!readingReminderEnabled || notifPermission !== 'granted') {
+      notifications.cancelReminder(notifications.NOTIFICATION_IDS.DAILY_READING_REMINDER);
+      return;
+    }
+
+    if (notifications.isNative()) {
+      const [hour, minute] = readingReminderTime.split(':').map(Number);
+      notifications.scheduleDailyReminder({
+        id: notifications.NOTIFICATION_IDS.DAILY_READING_REMINDER,
+        title: 'Quran Reading Reminder 📖',
+        body: `Assalamu Alaikum! Don't forget today's reading goal.`,
+        hour,
+        minute,
+      });
+      return;
+    }
+
+    // Web fallback: foreground-only timer (unchanged behavior from before).
+    if (readingReminderTimerRef.current) clearTimeout(readingReminderTimerRef.current);
+    const scheduleNext = () => {
+      const now = new Date();
+      const [h, m] = readingReminderTime.split(':').map(Number);
+      const target = new Date();
+      target.setHours(h, m, 0, 0);
+      if (target <= now) target.setDate(target.getDate() + 1);
+      const ms = target - now;
+      readingReminderTimerRef.current = setTimeout(() => {
+        notifications.showImmediateNotification({
+          title: 'Quran Reading Reminder 📖',
+          body: `Assalamu Alaikum! Don't forget today's reading goal.`,
+        });
+        scheduleNext();
+      }, ms);
+    };
+    scheduleNext();
+    return () => { if (readingReminderTimerRef.current) clearTimeout(readingReminderTimerRef.current); };
+  }, [readingReminderEnabled, notifPermission, readingReminderTime]);
+
+  // Schedule/cancel the reflection reminder (always 7:00 AM, matching the
+  // original DailyReflection.jsx behavior).
+  useEffect(() => {
+    if (!reflectionReminderEnabled || notifPermission !== 'granted') {
+      notifications.cancelReminder(notifications.NOTIFICATION_IDS.DAILY_REFLECTION_REMINDER);
+      return;
+    }
+
+    if (notifications.isNative()) {
+      notifications.scheduleDailyReminder({
+        id: notifications.NOTIFICATION_IDS.DAILY_REFLECTION_REMINDER,
+        title: "Today's Reflection",
+        body: 'Open the app for today\'s verse and reflection question.',
+        hour: 7,
+        minute: 0,
+      });
+      return;
+    }
+
+    if (reflectionReminderTimerRef.current) clearTimeout(reflectionReminderTimerRef.current);
+    const scheduleNext = () => {
+      const now = new Date();
+      const target = new Date();
+      target.setHours(7, 0, 0, 0);
+      if (target <= now) target.setDate(target.getDate() + 1);
+      const ms = target - now;
+      reflectionReminderTimerRef.current = setTimeout(() => {
+        notifications.showImmediateNotification({
+          title: "Today's Reflection",
+          body: 'Open the app for today\'s verse and reflection question.',
+        });
+        scheduleNext();
+      }, ms);
+    };
+    scheduleNext();
+    return () => { if (reflectionReminderTimerRef.current) clearTimeout(reflectionReminderTimerRef.current); };
+  }, [reflectionReminderEnabled, notifPermission]);
+
+  const requestNotifPermission = async () => {
+    const result = await notifications.requestPermission();
+    setNotifPermission(result);
+    return result;
+  };
+
+  const handleReadingReminderToggle = async (enabled) => {
+    if (!canNotify) return;
+    setReadingReminderEnabled(enabled);
+    localStorage.setItem('quranReminderEnabled', String(enabled));
+    if (enabled && notifPermission !== 'granted') {
+      await requestNotifPermission();
+    }
+  };
+
+  const handleReflectionReminderToggle = async (enabled) => {
+    if (!canNotify) return;
+    setReflectionReminderEnabled(enabled);
+    localStorage.setItem('reflectionNotify', String(enabled));
+    if (enabled && notifPermission !== 'granted') {
+      await requestNotifPermission();
+    }
+  };
+
+  const handleReadingReminderTimeChange = (e) => {
+    setReadingReminderTime(e.target.value);
+    localStorage.setItem('quranReminderTime', e.target.value);
+  };
+
+  const THEMES = [
+    { id: 'violet', name: 'Royal Violet', accent: '#7B61FF', bg: '#F5F2FF' },
+    { id: 'emerald', name: 'Emerald & Gold', accent: '#0F6E56', bg: '#FDFBF3' },
+    { id: 'indigo-amber', name: 'Indigo & Amber', accent: '#3C3489', bg: '#F3F1FF' },
+    { id: 'terracotta', name: 'Terracotta & Sand', accent: '#C1502B', bg: '#FAF6EE' },
+    { id: 'teal-rose', name: 'Teal & Rose', accent: '#128064', bg: '#F0F9F6' },
+  ];
+
+  const handleThemeChange = (id) => {
+    setThemeId(id);
+    localStorage.setItem('quranTheme', id);
+    // Layout.jsx's effect only re-runs on mount/navigation - this event
+    // lets the theme apply instantly while staying on the Settings page.
+    window.dispatchEvent(new Event('app-theme-change'));
+  };
+
   const [showGoalDialog, setShowGoalDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showUsernameDialog, setShowUsernameDialog] = useState(false);
@@ -195,13 +351,12 @@ export default function Settings() {
       title: 'Preferences',
       items: [
         {
-          icon: Bell,
-          label: 'Notifications',
-          toggle: true,
-          value: notifications,
-          onChange: setNotifications,
-          color: 'text-amber-500',
-          bg: 'bg-amber-50'
+          icon: Palette,
+          label: 'Theme',
+          value: THEMES.find(t => t.id === themeId)?.name || 'Royal Violet',
+          action: () => setShowThemeDialog(true),
+          color: 'text-violet-500',
+          bg: 'bg-violet-50'
         },
         {
           icon: Moon,
@@ -344,7 +499,84 @@ export default function Settings() {
         </motion.div>
       ))}
 
-      {/* Danger Zone */}
+      {/* Notifications - consolidated here from what used to be two
+          separate toggle cards embedded directly in the Home page
+          (DailyReminder.jsx and DailyReflection.jsx). Same underlying
+          localStorage keys and scheduling logic, just relocated. */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+        <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 px-1 select-none">
+          Notifications
+        </h3>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+          {/* Daily Reading Reminder */}
+          <div className="p-4 border-b border-slate-100 dark:border-slate-700">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3 select-none">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center select-none">
+                  <Bell className="w-5 h-5 text-amber-500 select-none" />
+                </div>
+                <div>
+                  <p className="font-medium text-slate-800 dark:text-white select-none">Daily Reading Reminder</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 select-none">
+                    {!canNotify
+                      ? 'Not supported on this device'
+                      : readingReminderEnabled && notifPermission === 'granted'
+                        ? `On — ${readingReminderTime}`
+                        : 'Get notified to read daily'}
+                  </p>
+                </div>
+              </div>
+              <Switch
+                checked={readingReminderEnabled && notifPermission === 'granted'}
+                onCheckedChange={handleReadingReminderToggle}
+                disabled={!canNotify}
+                className="touch-manipulation"
+              />
+            </div>
+            {readingReminderEnabled && notifPermission === 'granted' && (
+              <div className="mt-3 pt-3 flex items-center gap-3 border-t border-slate-100 dark:border-slate-700">
+                <Clock className="w-4 h-4 text-slate-400" />
+                <label className="text-sm text-slate-500 dark:text-slate-400">Reminder time</label>
+                <input
+                  type="time"
+                  value={readingReminderTime}
+                  onChange={handleReadingReminderTimeChange}
+                  className="ml-auto px-3 py-1.5 rounded-lg text-sm bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-800 dark:text-white touch-manipulation"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Reflection Reminder */}
+          <div className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3 select-none">
+                <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-900/20 flex items-center justify-center select-none">
+                  <BellRing className="w-5 h-5 text-violet-500 select-none" />
+                </div>
+                <div>
+                  <p className="font-medium text-slate-800 dark:text-white select-none">Reflection Reminder</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 select-none">
+                    {!canNotify
+                      ? 'Not supported on this device'
+                      : reflectionReminderEnabled && notifPermission === 'granted'
+                        ? 'On — daily at 7:00 AM'
+                        : 'Get a daily verse to ponder'}
+                  </p>
+                </div>
+              </div>
+              <Switch
+                checked={reflectionReminderEnabled && notifPermission === 'granted'}
+                onCheckedChange={handleReflectionReminderToggle}
+                disabled={!canNotify}
+                className="touch-manipulation"
+              />
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -436,6 +668,38 @@ export default function Settings() {
       </Drawer>
 
       {/* Username Dialog */}
+      <Dialog open={showThemeDialog} onOpenChange={setShowThemeDialog}>
+        <DialogContent className="max-w-sm dark:bg-slate-800 dark:border-slate-700">
+          <DialogHeader>
+            <DialogTitle className="dark:text-white">Choose a Theme</DialogTitle>
+            <DialogDescription className="dark:text-slate-400">
+              Applies instantly, works with both light and dark mode
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-2 space-y-2">
+            {THEMES.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => handleThemeChange(t.id)}
+                className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors touch-manipulation ${
+                  themeId === t.id
+                    ? 'border-violet-400 bg-violet-50 dark:bg-violet-900/20'
+                    : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                }`}
+              >
+                <div className="flex -space-x-1.5 shrink-0">
+                  <div className="w-7 h-7 rounded-full border-2 border-white dark:border-slate-800" style={{ background: t.bg }} />
+                  <div className="w-7 h-7 rounded-full border-2 border-white dark:border-slate-800" style={{ background: t.accent }} />
+                </div>
+                <span className="flex-1 text-left font-medium text-slate-800 dark:text-white">{t.name}</span>
+                {themeId === t.id && <Check className="w-5 h-5 text-violet-500" />}
+              </button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={showUsernameDialog} onOpenChange={setShowUsernameDialog}>
         <DialogContent className="max-w-sm dark:bg-slate-800 dark:border-slate-700">
           <DialogHeader>

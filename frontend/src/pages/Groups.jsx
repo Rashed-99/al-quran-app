@@ -89,26 +89,26 @@ export default function Groups() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
-        <Loader2 className="w-8 h-8 text-violet-500 animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--app-bg-gradient)' }}>
+        <Loader2 className="w-8 h-8 text-[var(--app-accent)] animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 p-4">
+    <div className="min-h-screen p-4" style={{ background: 'var(--app-bg-gradient)' }}>
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-1">Groups</h1>
-          <p className="text-slate-500 dark:text-slate-400">Compete with friends to read more Quran</p>
+          <h1 className="text-2xl font-bold text-[var(--app-text-primary)] mb-1">Groups</h1>
+          <p className="text-[var(--app-text-secondary)]">Compete with friends to read more Quran</p>
         </div>
 
         {/* Action Buttons */}
         <div className="flex gap-3 mb-6">
           <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 rounded-xl py-6">
+              <Button className="flex-1 bg-[image:var(--app-accent-gradient)] rounded-xl py-6">
                 <Plus className="w-5 h-5 mr-2" />
                 Create Group
               </Button>
@@ -126,7 +126,7 @@ export default function Groups() {
                 />
                 <Button 
                   onClick={createGroup} 
-                  className="w-full bg-violet-600 hover:bg-violet-700"
+                  className="w-full bg-[var(--app-accent)] hover:opacity-90"
                   disabled={!newGroupName.trim()}
                 >
                   Create
@@ -156,7 +156,7 @@ export default function Groups() {
                 />
                 <Button 
                   onClick={joinGroup} 
-                  className="w-full bg-violet-600 hover:bg-violet-700"
+                  className="w-full bg-[var(--app-accent)] hover:opacity-90"
                   disabled={!joinCode.trim()}
                 >
                   Join
@@ -169,11 +169,11 @@ export default function Groups() {
         {/* Groups List */}
         {groups.length === 0 ? (
           <div className="text-center py-12">
-            <div className="w-16 h-16 bg-violet-100 dark:bg-violet-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Users className="w-8 h-8 text-violet-500" />
+            <div className="w-16 h-16 bg-[var(--app-accent-soft)] rounded-full flex items-center justify-center mx-auto mb-4">
+              <Users className="w-8 h-8 text-[var(--app-accent)]" />
             </div>
-            <p className="text-slate-500 dark:text-slate-400 mb-2">No groups yet</p>
-            <p className="text-sm text-slate-400 dark:text-slate-500">Create or join a group to start competing!</p>
+            <p className="text-[var(--app-text-secondary)] mb-2">No groups yet</p>
+            <p className="text-sm text-[var(--app-text-tertiary)]">Create or join a group to start competing!</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -186,21 +186,21 @@ export default function Groups() {
               >
                 <button
                   onClick={() => navigate(createPageUrl(`GroupDetail?id=${group.id}`))}
-                  className="w-full bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700 hover:shadow-md transition-all text-left"
+                  className="w-full bg-[var(--app-card-bg)] rounded-2xl p-4 border border-[var(--app-card-border)] hover:shadow-md transition-all text-left"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-[image:var(--app-accent-gradient)] rounded-xl flex items-center justify-center">
                         <Trophy className="w-6 h-6 text-white" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <p className="font-semibold text-slate-800 dark:text-white">{group.name}</p>
+                          <p className="font-semibold text-[var(--app-text-primary)]">{group.name}</p>
                           {group.admin_id === user?.id && (
                             <Crown className="w-4 h-4 text-amber-500" />
                           )}
                         </div>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                        <p className="text-sm text-[var(--app-text-secondary)]">
                           {group.member_count || 1} members
                         </p>
                       </div>
@@ -213,7 +213,7 @@ export default function Groups() {
                           e.stopPropagation();
                           copyInviteCode(group.invite_code);
                         }}
-                        className="text-slate-400 hover:text-violet-600"
+                        className="text-[var(--app-text-tertiary)] hover:text-[var(--app-accent)]"
                       >
                         <Copy className="w-4 h-4" />
                       </Button>

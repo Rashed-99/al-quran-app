@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Moon, Bell, Quote } from 'lucide-react';
-import * as notifications from '@/lib/notifications';
+import { Moon, Quote } from 'lucide-react';
 
 const REFLECTIONS = [
   {
@@ -96,78 +95,12 @@ function getDayOfYear() {
   return Math.floor((now - start) / 86400000);
 }
 
+// The notification toggle previously rendered here has moved to Settings
+// -> Notifications (consolidated with the reading reminder toggle). This
+// component now only shows the day's reflection content.
 export default function DailyReflection() {
   const dayIndex = getDayOfYear() % REFLECTIONS.length;
   const reflection = REFLECTIONS[dayIndex];
-
-  const [notifyEnabled, setNotifyEnabled] = useState(() => localStorage.getItem('reflectionNotify') === 'true');
-  const [permission, setPermission] = useState('prompt');
-  const timerRef = useRef(null);
-  const canNotify = permission !== 'unsupported';
-
-  useEffect(() => {
-    notifications.getPermissionStatus().then(setPermission);
-  }, []);
-
-  useEffect(() => {
-    if (!notifyEnabled || !canNotify || permission !== 'granted') {
-      notifications.cancelReminder(notifications.NOTIFICATION_IDS.DAILY_REFLECTION_REMINDER);
-      return;
-    }
-
-    if (notifications.isNative()) {
-      notifications.scheduleDailyReminder({
-        id: notifications.NOTIFICATION_IDS.DAILY_REFLECTION_REMINDER,
-        title: "Today's Reflection",
-        body: `${reflection.translation}\n\nReflect: ${reflection.question}`,
-        hour: 7,
-        minute: 0,
-      });
-      return;
-    }
-
-    // Web fallback: foreground-only timer.
-    if (timerRef.current) clearTimeout(timerRef.current);
-
-    const scheduleNext = () => {
-      const now = new Date();
-      const target = new Date();
-      target.setHours(7, 0, 0, 0);
-      if (target <= now) target.setDate(target.getDate() + 1);
-      const ms = target - now;
-
-      timerRef.current = setTimeout(() => {
-        notifications.showImmediateNotification({
-          title: "Today's Reflection",
-          body: `${reflection.translation}\n\nReflect: ${reflection.question}`,
-        });
-        scheduleNext();
-      }, ms);
-    };
-
-    scheduleNext();
-    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [notifyEnabled, permission, reflection]);
-
-  const handleToggle = () => {
-    if (!canNotify) return;
-    const newState = !notifyEnabled;
-    setNotifyEnabled(newState);
-    localStorage.setItem('reflectionNotify', String(newState));
-    if (newState && permission !== 'granted') {
-      notifications.requestPermission().then(result => {
-        setPermission(result);
-        if (result === 'granted') {
-          notifications.showImmediateNotification({
-            title: 'Reflection Notifications Enabled',
-            body: "You'll receive a daily verse and reflection question at 7:00 AM.",
-          });
-        }
-      });
-    }
-  };
-
-  const isActive = notifyEnabled && permission === 'granted';
 
   return (
     <motion.div
@@ -176,8 +109,7 @@ export default function DailyReflection() {
       transition={{ delay: 0.3 }}
       className="mb-6"
     >
-      {/* Reflection card */}
-      <div className="rounded-3xl p-6 mb-3" style={{ background: 'var(--app-card-bg)', border: '1px solid var(--app-card-border)' }}>
+      <div className="rounded-3xl p-6" style={{ background: 'var(--app-card-bg)', border: '1px solid var(--app-card-border)', boxShadow: 'var(--app-shadow-card)' }}>
         <div className="flex items-center gap-2 mb-5">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--app-accent-soft)' }}>
             <Moon className="w-4 h-4 text-violet-400" />
@@ -203,35 +135,6 @@ export default function DailyReflection() {
             <p className="text-sm italic leading-relaxed" style={{ color: 'var(--app-text-primary)', opacity: 0.85 }}>{reflection.question}</p>
           </div>
         </div>
-      </div>
-
-      {/* Notification toggle */}
-      <div className="rounded-3xl p-5 flex items-center justify-between" style={{ background: 'var(--app-card-bg)', border: '1px solid var(--app-card-border)' }}>
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'var(--app-card-bg-alt)' }}>
-            <Bell className="w-5 h-5 text-violet-400" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-sm" style={{ color: 'var(--app-text-primary)' }}>Reflection Reminders</h3>
-            <p className="text-xs" style={{ color: 'var(--app-text-secondary)' }}>
-              {isActive
-                ? 'On — daily at 7:00 AM'
-                : canNotify
-                  ? 'Get a daily verse to ponder'
-                  : 'Not supported on this device'}
-            </p>
-          </div>
-        </div>
-        <button
-          onClick={handleToggle}
-          disabled={!canNotify}
-          className="relative w-12 h-7 rounded-full transition-colors touch-manipulation disabled:opacity-40 shrink-0"
-          style={{ background: isActive ? 'var(--app-accent)' : 'var(--app-card-bg-alt)' }}
-        >
-          <span className={`absolute top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white shadow transition-all ${
-            isActive ? 'right-0.5' : 'left-0.5'
-          }`} />
-        </button>
       </div>
     </motion.div>
   );

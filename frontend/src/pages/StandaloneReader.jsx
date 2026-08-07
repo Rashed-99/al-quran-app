@@ -146,7 +146,7 @@ export default function StandaloneReader() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white dark:from-slate-900 dark:to-slate-950 flex flex-col" style={{ overscrollBehaviorY: 'none' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: 'var(--app-bg-gradient)', overscrollBehaviorY: 'none' }}>
       <audio 
         ref={audioRef} 
         onEnded={() => setIsPlaying(false)}
@@ -154,24 +154,24 @@ export default function StandaloneReader() {
       />
       
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
+      <header className="sticky top-0 z-50 backdrop-blur-md" style={{ background: 'var(--app-bar-bg)', borderBottom: '1px solid var(--app-divider)' }}>
         <div className="flex items-center justify-between px-4 py-3 select-none">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate(createPageUrl('Explore'))}
-            className="rounded-full select-none touch-manipulation"
+            className="rounded-full select-none touch-manipulation hover:bg-black/5 dark:hover:bg-white/10"
           >
-            <X className="w-5 h-5 dark:text-white select-none" />
+            <X className="w-5 h-5 select-none" style={{ color: 'var(--app-text-primary)' }} />
           </Button>
 
           <div className="text-center select-none">
             <div className="flex items-center gap-2 justify-center">
-              <BookOpen className="w-4 h-4 text-emerald-500" />
-              <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full">Standalone Mode</span>
+              <BookOpen className="w-4 h-4" style={{ color: 'var(--app-accent)' }} />
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ color: 'var(--app-accent)', background: 'var(--app-accent-soft)' }}>Standalone Mode</span>
             </div>
-            <p className="font-semibold text-slate-800 dark:text-white select-none mt-1">{surahData.englishName}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 select-none">Verse {currentVerse} of {surahData.numberOfAyahs}</p>
+            <p className="font-semibold select-none mt-1" style={{ color: 'var(--app-text-primary)' }}>{surahData.englishName}</p>
+            <p className="text-xs select-none" style={{ color: 'var(--app-text-secondary)' }}>Verse {currentVerse} of {surahData.numberOfAyahs}</p>
           </div>
 
           <Sheet>
@@ -282,7 +282,7 @@ export default function StandaloneReader() {
 
             {/* Transliteration */}
             {verse.transliteration && (
-              <div className="bg-slate-50 dark:bg-slate-800/30 rounded-2xl px-5 py-3 mb-4">
+              <div className="bg-slate-50 dark:bg-slate-800/30 rounded-2xl px-5 py-3 mb-4 shadow-sm">
                 <p className="text-base text-slate-500 dark:text-slate-400 text-center italic">
                   {verse.transliteration}
                 </p>
@@ -290,7 +290,7 @@ export default function StandaloneReader() {
             )}
 
             {/* Translation */}
-            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6">
+            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 shadow-sm">
               <p className="text-lg text-slate-600 dark:text-slate-300 text-center leading-relaxed">
                 {verse.translation}
               </p>
@@ -300,13 +300,14 @@ export default function StandaloneReader() {
       </main>
 
       {/* Navigation */}
-      <footer className="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 px-4 py-4 safe-area-pb">
+      <footer className="sticky bottom-0 px-4 py-4 safe-area-pb" style={{ background: 'var(--app-bar-bg)', borderTop: '1px solid var(--app-divider)', backdropFilter: 'blur(12px)' }}>
         <div className="max-w-lg mx-auto flex items-center justify-between gap-4 select-none">
           <Button
             variant="outline"
             onClick={handlePrevVerse}
             disabled={currentSurah === 1 && currentVerse === 1}
-            className="flex-1 rounded-xl py-6 dark:border-slate-700 dark:text-white select-none touch-manipulation"
+            className="flex-1 rounded-xl py-6 select-none touch-manipulation"
+            style={{ borderColor: 'var(--app-card-border)', color: 'var(--app-text-primary)', background: 'var(--app-card-bg)', boxShadow: 'var(--app-shadow-card)' }}
           >
             <ChevronLeft className="w-5 h-5 mr-2 select-none" />
             <span className="select-none">Previous</span>
@@ -315,7 +316,8 @@ export default function StandaloneReader() {
           <Button
             onClick={handleNextVerse}
             disabled={currentSurah === 114 && currentVerse === surahData?.numberOfAyahs}
-            className="flex-1 rounded-xl py-6 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 select-none touch-manipulation"
+            className="flex-1 rounded-xl py-6 select-none touch-manipulation text-white hover:opacity-90"
+            style={{ background: 'var(--app-accent)', boxShadow: 'var(--app-shadow-elevated)' }}
           >
             <span className="select-none">Next</span>
             <ChevronRight className="w-5 h-5 ml-2 select-none" />

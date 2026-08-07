@@ -103,8 +103,8 @@ export default function GroupDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
-        <Loader2 className="w-8 h-8 text-violet-500 animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--app-bg-gradient)' }}>
+        <Loader2 className="w-8 h-8 text-[var(--app-accent)] animate-spin" />
       </div>
     );
   }
@@ -112,9 +112,9 @@ export default function GroupDetail() {
   if (!group) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
+    <div className="min-h-screen" style={{ background: 'var(--app-bg-gradient)' }}>
       {/* Header */}
-      <header className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-4 pb-8">
+      <header className="bg-[image:var(--app-accent-gradient)] text-white p-4 pb-8">
         <div className="max-w-lg mx-auto">
           <div className="flex items-center gap-3 mb-4">
             <Button
@@ -148,17 +148,17 @@ export default function GroupDetail() {
       {/* Leaderboard Tabs */}
       <div className="max-w-lg mx-auto p-4 -mt-4">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="w-full bg-white dark:bg-slate-800 rounded-xl p-1 mb-4 border border-slate-100 dark:border-slate-700">
+          <TabsList className="w-full bg-[var(--app-card-bg)] rounded-xl p-1 mb-4 border border-[var(--app-card-border)]">
             <TabsTrigger 
               value="today" 
-              className="flex-1 rounded-lg data-[state=active]:bg-violet-100 dark:data-[state=active]:bg-violet-900/30 data-[state=active]:text-violet-700 dark:data-[state=active]:text-violet-300"
+              className="flex-1 rounded-lg data-[state=active]:bg-[var(--app-accent-soft)] data-[state=active]:text-[var(--app-accent)]"
             >
               <Flame className="w-4 h-4 mr-2" />
               Today
             </TabsTrigger>
             <TabsTrigger 
               value="weekly"
-              className="flex-1 rounded-lg data-[state=active]:bg-violet-100 dark:data-[state=active]:bg-violet-900/30 data-[state=active]:text-violet-700 dark:data-[state=active]:text-violet-300"
+              className="flex-1 rounded-lg data-[state=active]:bg-[var(--app-accent-soft)] data-[state=active]:text-[var(--app-accent)]"
             >
               <Calendar className="w-4 h-4 mr-2" />
               Weekly
@@ -179,13 +179,13 @@ export default function GroupDetail() {
             </div>
 
             {/* Leaderboard */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 overflow-hidden">
-              <div className="p-4 border-b border-slate-100 dark:border-slate-700">
-                <h2 className="font-semibold text-slate-800 dark:text-white flex items-center gap-2">
+            <div className="bg-[var(--app-card-bg)] rounded-2xl shadow-lg border border-[var(--app-card-border)] overflow-hidden">
+              <div className="p-4 border-b border-[var(--app-card-border)]">
+                <h2 className="font-semibold text-[var(--app-text-primary)] flex items-center gap-2">
                   <Flame className="w-5 h-5 text-orange-500" />
                   Today's Leaderboard
                 </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                <p className="text-sm text-[var(--app-text-secondary)] mt-1">
                   {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
                 </p>
               </div>
@@ -198,7 +198,7 @@ export default function GroupDetail() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     className={`p-4 flex items-center gap-4 ${
-                      member.isCurrentUser ? 'bg-violet-50 dark:bg-violet-900/20' : ''
+                      member.isCurrentUser ? 'bg-[var(--app-accent-soft)]' : ''
                     }`}
                   >
                     {/* Rank */}
@@ -206,27 +206,27 @@ export default function GroupDetail() {
                       {index < 3 ? (
                         <Medal className="w-5 h-5 text-white" />
                       ) : (
-                        <span className="text-sm font-bold text-slate-600 dark:text-slate-300">{index + 1}</span>
+                        <span className="text-sm font-bold text-[var(--app-text-secondary)]">{index + 1}</span>
                       )}
                     </div>
 
                     {/* User Info */}
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <p className="font-medium text-slate-800 dark:text-white">
+                        <p className="font-medium text-[var(--app-text-primary)]">
                           {member.name}
-                          {member.isCurrentUser && <span className="text-violet-600 dark:text-violet-400 ml-1">(You)</span>}
+                          {member.isCurrentUser && <span className="text-[var(--app-accent)] ml-1">(You)</span>}
                         </p>
                         {member.isAdmin && (
                           <Crown className="w-4 h-4 text-amber-500" />
                         )}
                       </div>
                       <div className="flex items-center gap-3 mt-1">
-                        <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                        <span className="text-xs text-[var(--app-text-secondary)] flex items-center gap-1">
                           <BookOpen className="w-3 h-3" />
                           {member.verses} verses
                         </span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                        <span className="text-xs text-[var(--app-text-secondary)] flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           {member.time} min
                         </span>
@@ -249,7 +249,7 @@ export default function GroupDetail() {
 
               {leaderboard.length === 0 && (
                 <div className="p-8 text-center">
-                  <p className="text-slate-500 dark:text-slate-400">No members yet</p>
+                  <p className="text-[var(--app-text-secondary)]">No members yet</p>
                 </div>
               )}
             </div>
@@ -261,7 +261,7 @@ export default function GroupDetail() {
         </Tabs>
 
         {/* Motivational Card */}
-        <div className="mt-4 bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 rounded-2xl p-5 text-white shadow-lg">
+        <div className="mt-4 bg-[image:var(--app-accent-gradient)] rounded-2xl p-5 text-white shadow-lg">
           <p className="text-sm font-medium opacity-95">🤲 Keep reading! Every verse counts towards your daily goal and helps you climb the leaderboard.</p>
         </div>
       </div>

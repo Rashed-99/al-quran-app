@@ -15,14 +15,25 @@ export default function Layout({ children, currentPageName }) {
   // Hide nav on reading pages for immersive experience
   const hideNav = currentPageName === 'Reading' || currentPageName === 'QuranReader' || currentPageName === 'StandaloneReader' || currentPageName === 'Companion';
 
-  // Apply dark mode from localStorage
+  // Apply dark mode + selected color theme from localStorage. Also listens
+  // for a custom 'app-theme-change' event so Settings can update the
+  // active theme/mode instantly without needing this component to remount
+  // (which only happens on page navigation, not on a Settings toggle).
   useEffect(() => {
-    const isDark = localStorage.getItem('darkMode') !== 'false';
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    const applyTheme = () => {
+      const isDark = localStorage.getItem('darkMode') !== 'false';
+      const theme = localStorage.getItem('quranTheme') || 'violet';
+      document.documentElement.classList.toggle('dark', isDark);
+      if (theme === 'violet') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+    };
+
+    applyTheme();
+    window.addEventListener('app-theme-change', applyTheme);
+    return () => window.removeEventListener('app-theme-change', applyTheme);
   }, []);
 
   // Preserve scroll position per tab so switching tabs doesn't reset the view

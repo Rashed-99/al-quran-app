@@ -39,21 +39,21 @@ export default function ForgotPassword() {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 rounded-3xl bg-[image:var(--app-accent-gradient)] flex items-center justify-center mx-auto mb-4 shadow-lg">
             <BookOpen className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-white">Reset your password</h1>
           <p className="text-slate-400 mt-1">We'll email you a link to get back in</p>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-2xl">
+        <div className="bg-[var(--app-card-bg)] rounded-3xl p-6 shadow-2xl">
           {sent ? (
             <div className="text-center py-4 space-y-3">
               <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
               </div>
               <p className="text-slate-700 dark:text-slate-200 font-medium">Check your email</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
+              <p className="text-sm text-[var(--app-text-secondary)]">
                 If an account exists for <span className="font-medium">{email}</span>, a reset link is on its way.
               </p>
             </div>
@@ -86,7 +86,7 @@ export default function ForgotPassword() {
               <Button
                 type="submit"
                 disabled={submitting || !email.trim()}
-                className="w-full bg-violet-600 hover:bg-violet-700 rounded-xl py-6 touch-manipulation disabled:opacity-60"
+                className="w-full bg-[var(--app-accent)] hover:opacity-90 rounded-xl py-6 touch-manipulation disabled:opacity-60"
               >
                 {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Send Reset Link'}
               </Button>

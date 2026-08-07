@@ -44,14 +44,14 @@ export default function Login() {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 rounded-3xl bg-[image:var(--app-accent-gradient)] flex items-center justify-center mx-auto mb-4 shadow-lg">
             <BookOpen className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-white">Welcome back</h1>
           <p className="text-slate-400 mt-1">Sign in to continue your reading journey</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-2xl space-y-4">
+        <form onSubmit={handleSubmit} className="bg-[var(--app-card-bg)] rounded-3xl p-6 shadow-2xl space-y-4">
           {error && (
             <div className="flex items-center gap-2 p-3 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-sm">
               <AlertCircle className="w-4 h-4 shrink-0" />
@@ -79,7 +79,7 @@ export default function Login() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password" className="dark:text-slate-300">Password</Label>
-              <Link to="/forgot-password" className="text-xs text-violet-500 hover:text-violet-400">
+              <Link to="/forgot-password" className="text-xs text-[var(--app-accent)] hover:text-violet-400">
                 Forgot password?
               </Link>
             </div>
@@ -101,7 +101,7 @@ export default function Login() {
           <Button
             type="submit"
             disabled={submitting}
-            className="w-full bg-violet-600 hover:bg-violet-700 rounded-xl py-6 touch-manipulation disabled:opacity-60"
+            className="w-full bg-[var(--app-accent)] hover:opacity-90 rounded-xl py-6 touch-manipulation disabled:opacity-60"
           >
             {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
           </Button>

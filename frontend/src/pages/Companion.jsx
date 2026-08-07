@@ -92,9 +92,9 @@ export default function Companion() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: 'var(--app-bg-gradient)', paddingTop: 'env(safe-area-inset-top)' }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b border-[var(--app-divider)]" style={{ background: 'var(--app-bar-bg)' }}>
         <div className="flex items-center gap-3 px-4 py-3 max-w-lg mx-auto w-full">
           <button
             onClick={() => navigate(-1)}
@@ -102,12 +102,12 @@ export default function Companion() {
           >
             <ChevronLeft className="w-6 h-6 dark:text-white" />
           </button>
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-md">
+          <div className="w-10 h-10 rounded-2xl bg-[image:var(--app-accent-gradient)] flex items-center justify-center shadow-md">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1">
-            <h1 className="text-base font-bold text-slate-800 dark:text-white">Quran Companion</h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <h1 className="text-base font-bold text-[var(--app-text-primary)]">Quran Companion</h1>
+            <p className="text-xs text-[var(--app-text-secondary)]">
               {sending ? 'Thinking…' : 'Encouragement & Tafsir'}
             </p>
           </div>
@@ -118,18 +118,18 @@ export default function Companion() {
       <div className="flex-1 overflow-y-auto px-4 py-4 max-w-lg mx-auto w-full space-y-4">
         {loading ? (
           <div className="flex flex-col items-center justify-center h-64 gap-3">
-            <div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" />
-            <p className="text-sm text-slate-500 dark:text-slate-400">Loading your companion…</p>
+            <div className="w-8 h-8 border-4 border-[var(--app-accent-soft)] border-t-[var(--app-accent)] rounded-full animate-spin" />
+            <p className="text-sm text-[var(--app-text-secondary)]">Loading your companion…</p>
           </div>
         ) : error && messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 gap-4 px-6 text-center">
             <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-900/20 flex items-center justify-center">
               <AlertCircle className="w-7 h-7 text-rose-500" />
             </div>
-            <p className="text-sm text-slate-600 dark:text-slate-300">{error}</p>
+            <p className="text-sm text-[var(--app-text-secondary)]">{error}</p>
             <button
               onClick={initConversation}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-violet-600 text-white text-sm font-medium touch-manipulation active:scale-95 transition-transform"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--app-accent)] text-white text-sm font-medium touch-manipulation active:scale-95 transition-transform"
             >
               <RefreshCw className="w-4 h-4" /> Retry
             </button>
@@ -141,13 +141,13 @@ export default function Companion() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700 shadow-sm"
+                className="bg-[var(--app-card-bg)] rounded-2xl p-5 border border-[var(--app-card-border)] shadow-sm"
               >
                 <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="w-5 h-5 text-violet-500" />
-                  <h2 className="font-semibold text-slate-800 dark:text-white">Assalamu Alaikum! 👋</h2>
+                  <Sparkles className="w-5 h-5 text-[var(--app-accent)]" />
+                  <h2 className="font-semibold text-[var(--app-text-primary)]">Assalamu Alaikum! 👋</h2>
                 </div>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+                <p className="text-sm text-[var(--app-text-secondary)] mb-4">
                   I'm your Quran Companion. I can track your reading progress and encourage you, suggest realistic daily goals, and point you to tafsir for any verse. How can I help you today?
                 </p>
                 <div className="space-y-2">
@@ -155,12 +155,12 @@ export default function Companion() {
                     <button
                       key={i}
                       onClick={() => handleSend(s.text)}
-                      className="w-full flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-violet-50 dark:hover:bg-violet-900/20 border border-slate-100 dark:border-slate-700 transition-colors text-left touch-manipulation"
+                      className="w-full flex items-center gap-3 p-3 rounded-xl bg-[var(--app-card-bg-alt)] hover:bg-[var(--app-accent-soft)] border border-[var(--app-card-border)] transition-colors text-left touch-manipulation"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center shrink-0">
-                        <s.icon className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+                      <div className="w-8 h-8 rounded-lg bg-[var(--app-accent-soft)] flex items-center justify-center shrink-0">
+                        <s.icon className="w-4 h-4 text-[var(--app-accent)]" />
                       </div>
-                      <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{s.label}</span>
+                      <span className="text-sm font-medium text-[var(--app-text-primary)]">{s.label}</span>
                     </button>
                   ))}
                 </div>
@@ -192,11 +192,11 @@ export default function Companion() {
             {/* Sending indicator */}
             {sending && (
               <div className="flex justify-start">
-                <div className="bg-white dark:bg-slate-800 rounded-2xl rounded-tl-md px-4 py-3 shadow-sm border border-slate-100 dark:border-slate-700">
+                <div className="bg-[var(--app-card-bg)] rounded-2xl rounded-tl-md px-4 py-3 shadow-sm border border-[var(--app-card-border)]">
                   <div className="flex gap-1">
-                    <span className="w-2 h-2 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-[var(--app-accent)] animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-[var(--app-accent)] animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-[var(--app-accent)] animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               </div>
@@ -207,7 +207,7 @@ export default function Companion() {
       </div>
 
       {/* Input bar */}
-      <div className="sticky bottom-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-100 dark:border-slate-800" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      <div className="sticky bottom-0 backdrop-blur-md border-t border-[var(--app-divider)]" style={{ background: 'var(--app-bar-bg)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-2">
           <input
             type="text"
@@ -216,12 +216,12 @@ export default function Companion() {
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
             placeholder="Ask about your progress or a verse…"
             disabled={sending}
-            className="flex-1 h-11 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 text-sm text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50"
+            className="flex-1 h-11 rounded-full bg-[var(--app-card-bg-alt)] border border-[var(--app-card-border)] px-4 text-sm text-[var(--app-text-primary)] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[var(--app-accent)] disabled:opacity-50"
           />
           <button
             onClick={() => handleSend()}
             disabled={sending || !input.trim()}
-            className="w-11 h-11 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white flex items-center justify-center shadow-md disabled:opacity-40 touch-manipulation shrink-0"
+            className="w-11 h-11 rounded-full bg-[image:var(--app-accent-gradient)] text-white flex items-center justify-center shadow-md disabled:opacity-40 touch-manipulation shrink-0"
           >
             <Send className="w-5 h-5" />
           </button>

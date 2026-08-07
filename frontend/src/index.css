@@ -152,6 +152,9 @@
   --app-accent: #7B61FF;
   --app-accent-soft: rgba(123, 97, 255, 0.10);
   --app-bar-bg: rgba(250, 249, 252, 0.75);
+  --app-accent-gradient: linear-gradient(135deg, #6E5DCF 0%, #7B61FF 100%);
+  --app-shadow-card: 0 1px 2px rgba(30, 27, 46, 0.04), 0 2px 8px rgba(30, 27, 46, 0.05);
+  --app-shadow-elevated: 0 4px 12px rgba(30, 27, 46, 0.07), 0 8px 24px rgba(30, 27, 46, 0.06);
 }
 
 .dark {
@@ -168,7 +171,172 @@
   --app-divider: rgba(255, 255, 255, 0.06);
   --app-accent: #7B61FF;
   --app-accent-soft: rgba(123, 97, 255, 0.15);
+  --app-accent-gradient: linear-gradient(135deg, #6E5DCF 0%, #7B61FF 100%);
   --app-bar-bg: rgba(18, 18, 18, 0.55);
+  --app-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.25);
+  --app-shadow-elevated: 0 6px 18px rgba(0, 0, 0, 0.4), 0 10px 32px rgba(0, 0, 0, 0.3);
+}
+
+/*
+ * Selectable color themes. "violet" (above, :root/.dark) is the default and
+ * needs no data-theme attribute. Choosing another theme in Settings sets
+ * data-theme="X" on <html> (see Layout.jsx); the .dark class layers on top
+ * of whichever theme is active exactly like it does for the default.
+ */
+[data-theme="emerald"] {
+  --app-bg: #FDFBF3;
+  --app-bg-gradient: linear-gradient(180deg, #E9F3EC 0%, #F6F8F0 50%, #FDFBF3 100%);
+  --app-card-bg: #FFFFFF;
+  --app-card-bg-alt: #F0EEE0;
+  --app-card-border: rgba(15, 110, 86, 0.14);
+  --app-text-primary: #1F2A24;
+  --app-text-secondary: #6B7268;
+  --app-text-tertiary: #96998F;
+  --app-pill-bg: rgba(15, 110, 86, 0.08);
+  --app-pill-border: rgba(15, 110, 86, 0.14);
+  --app-divider: rgba(15, 110, 86, 0.12);
+  --app-accent: #0F6E56;
+  --app-accent-soft: rgba(15, 110, 86, 0.12);
+  --app-accent-gradient: linear-gradient(135deg, #0B5A46 0%, #159775 100%);
+  --app-bar-bg: rgba(253, 251, 243, 0.8);
+  --app-shadow-card: 0 1px 2px rgba(31, 42, 36, 0.05), 0 2px 8px rgba(31, 42, 36, 0.06);
+  --app-shadow-elevated: 0 4px 12px rgba(31, 42, 36, 0.08), 0 8px 24px rgba(31, 42, 36, 0.07);
+}
+[data-theme="emerald"].dark {
+  --app-bg: #0D1512;
+  --app-bg-gradient: linear-gradient(180deg, #113022 0%, #0F241C 45%, #0D1512 100%);
+  --app-card-bg: #16211C;
+  --app-card-bg-alt: #131C18;
+  --app-card-border: rgba(255, 255, 255, 0.06);
+  --app-text-primary: #F3F7F4;
+  --app-text-secondary: #9DB0A4;
+  --app-text-tertiary: #6C7C72;
+  --app-pill-bg: rgba(255, 255, 255, 0.07);
+  --app-pill-border: rgba(255, 255, 255, 0.10);
+  --app-divider: rgba(255, 255, 255, 0.06);
+  --app-accent: #2FA57F;
+  --app-accent-soft: rgba(47, 165, 127, 0.18);
+  --app-accent-gradient: linear-gradient(135deg, #157A5E 0%, #2FA57F 100%);
+  --app-bar-bg: rgba(13, 21, 18, 0.6);
+  --app-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.25);
+  --app-shadow-elevated: 0 6px 18px rgba(0, 0, 0, 0.4), 0 10px 32px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="indigo-amber"] {
+  --app-bg: #F3F1FF;
+  --app-bg-gradient: linear-gradient(180deg, #E8E4FB 0%, #F2EFFC 50%, #F9F8FD 100%);
+  --app-card-bg: #FFFFFF;
+  --app-card-bg-alt: #EEEAFB;
+  --app-card-border: rgba(60, 52, 137, 0.14);
+  --app-text-primary: #201D3A;
+  --app-text-secondary: #6E699A;
+  --app-text-tertiary: #9B96C4;
+  --app-pill-bg: rgba(60, 52, 137, 0.08);
+  --app-pill-border: rgba(60, 52, 137, 0.14);
+  --app-divider: rgba(60, 52, 137, 0.12);
+  --app-accent: #3C3489;
+  --app-accent-soft: rgba(60, 52, 137, 0.12);
+  --app-accent-gradient: linear-gradient(135deg, #322B70 0%, #4A41A8 100%);
+  --app-bar-bg: rgba(243, 241, 255, 0.8);
+  --app-shadow-card: 0 1px 2px rgba(32, 29, 58, 0.05), 0 2px 8px rgba(32, 29, 58, 0.06);
+  --app-shadow-elevated: 0 4px 12px rgba(32, 29, 58, 0.08), 0 8px 24px rgba(32, 29, 58, 0.07);
+}
+[data-theme="indigo-amber"].dark {
+  --app-bg: #14122A;
+  --app-bg-gradient: linear-gradient(180deg, #241F55 0%, #1A1740 45%, #14122A 100%);
+  --app-card-bg: #1D1A3B;
+  --app-card-bg-alt: #191631;
+  --app-card-border: rgba(255, 255, 255, 0.06);
+  --app-text-primary: #F1F0FA;
+  --app-text-secondary: #A79FD6;
+  --app-text-tertiary: #766EA0;
+  --app-pill-bg: rgba(255, 255, 255, 0.07);
+  --app-pill-border: rgba(255, 255, 255, 0.10);
+  --app-divider: rgba(255, 255, 255, 0.06);
+  --app-accent: #8C7FE8;
+  --app-accent-soft: rgba(140, 127, 232, 0.18);
+  --app-accent-gradient: linear-gradient(135deg, #5B4FC4 0%, #8C7FE8 100%);
+  --app-bar-bg: rgba(20, 18, 42, 0.6);
+  --app-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.25);
+  --app-shadow-elevated: 0 6px 18px rgba(0, 0, 0, 0.4), 0 10px 32px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="terracotta"] {
+  --app-bg: #FAF6EE;
+  --app-bg-gradient: linear-gradient(180deg, #F5E9DC 0%, #F8F0E4 50%, #FAF6EE 100%);
+  --app-card-bg: #FFFFFF;
+  --app-card-bg-alt: #F1E7D8;
+  --app-card-border: rgba(193, 80, 43, 0.14);
+  --app-text-primary: #3A2A1D;
+  --app-text-secondary: #8A7360;
+  --app-text-tertiary: #B5A390;
+  --app-pill-bg: rgba(193, 80, 43, 0.08);
+  --app-pill-border: rgba(193, 80, 43, 0.14);
+  --app-divider: rgba(193, 80, 43, 0.12);
+  --app-accent: #C1502B;
+  --app-accent-soft: rgba(193, 80, 43, 0.12);
+  --app-accent-gradient: linear-gradient(135deg, #A5441F 0%, #D46237 100%);
+  --app-bar-bg: rgba(250, 246, 238, 0.8);
+  --app-shadow-card: 0 1px 2px rgba(58, 42, 29, 0.05), 0 2px 8px rgba(58, 42, 29, 0.06);
+  --app-shadow-elevated: 0 4px 12px rgba(58, 42, 29, 0.08), 0 8px 24px rgba(58, 42, 29, 0.07);
+}
+[data-theme="terracotta"].dark {
+  --app-bg: #1A130D;
+  --app-bg-gradient: linear-gradient(180deg, #3A2416 0%, #2A1B10 45%, #1A130D 100%);
+  --app-card-bg: #241A11;
+  --app-card-bg-alt: #1E150E;
+  --app-card-border: rgba(255, 255, 255, 0.06);
+  --app-text-primary: #F7EFE6;
+  --app-text-secondary: #C4A88F;
+  --app-text-tertiary: #8C7361;
+  --app-pill-bg: rgba(255, 255, 255, 0.07);
+  --app-pill-border: rgba(255, 255, 255, 0.10);
+  --app-divider: rgba(255, 255, 255, 0.06);
+  --app-accent: #E0713F;
+  --app-accent-soft: rgba(224, 113, 63, 0.18);
+  --app-accent-gradient: linear-gradient(135deg, #C1602F 0%, #E0713F 100%);
+  --app-bar-bg: rgba(26, 19, 13, 0.6);
+  --app-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.25);
+  --app-shadow-elevated: 0 6px 18px rgba(0, 0, 0, 0.4), 0 10px 32px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="teal-rose"] {
+  --app-bg: #F0F9F6;
+  --app-bg-gradient: linear-gradient(180deg, #DCF0E7 0%, #EAF6EF 50%, #F0F9F6 100%);
+  --app-card-bg: #FFFFFF;
+  --app-card-bg-alt: #E4F2EA;
+  --app-card-border: rgba(18, 128, 100, 0.14);
+  --app-text-primary: #16302A;
+  --app-text-secondary: #5E7871;
+  --app-text-tertiary: #93A99F;
+  --app-pill-bg: rgba(18, 128, 100, 0.08);
+  --app-pill-border: rgba(18, 128, 100, 0.14);
+  --app-divider: rgba(18, 128, 100, 0.12);
+  --app-accent: #128064;
+  --app-accent-soft: rgba(18, 128, 100, 0.12);
+  --app-accent-gradient: linear-gradient(135deg, #0E6650 0%, #189B79 100%);
+  --app-bar-bg: rgba(240, 249, 246, 0.8);
+  --app-shadow-card: 0 1px 2px rgba(22, 48, 42, 0.05), 0 2px 8px rgba(22, 48, 42, 0.06);
+  --app-shadow-elevated: 0 4px 12px rgba(22, 48, 42, 0.08), 0 8px 24px rgba(22, 48, 42, 0.07);
+}
+[data-theme="teal-rose"].dark {
+  --app-bg: #0C1815;
+  --app-bg-gradient: linear-gradient(180deg, #123529 0%, #0F281F 45%, #0C1815 100%);
+  --app-card-bg: #142621;
+  --app-card-bg-alt: #101E1A;
+  --app-card-border: rgba(255, 255, 255, 0.06);
+  --app-text-primary: #EAF6F1;
+  --app-text-secondary: #90B5A7;
+  --app-text-tertiary: #628074;
+  --app-pill-bg: rgba(255, 255, 255, 0.07);
+  --app-pill-border: rgba(255, 255, 255, 0.10);
+  --app-divider: rgba(255, 255, 255, 0.06);
+  --app-accent: #35C79A;
+  --app-accent-soft: rgba(53, 199, 154, 0.18);
+  --app-accent-gradient: linear-gradient(135deg, #1FA47F 0%, #35C79A 100%);
+  --app-bar-bg: rgba(12, 24, 21, 0.6);
+  --app-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.25);
+  --app-shadow-elevated: 0 6px 18px rgba(0, 0, 0, 0.4), 0 10px 32px rgba(0, 0, 0, 0.3);
 }
 
 

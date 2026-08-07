@@ -38,8 +38,8 @@ export default function Stats() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center dark:bg-slate-900">
-        <Loader2 className="w-8 h-8 text-violet-500 animate-spin" />
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[var(--app-accent)] animate-spin" />
       </div>
     );
   }
@@ -127,8 +127,8 @@ export default function Stats() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2 select-none">Your Progress</h1>
-        <p className="text-slate-500 dark:text-slate-400 select-none">Track your Quran reading journey</p>
+        <h1 className="text-2xl font-bold text-[var(--app-text-primary)] mb-2 select-none">Your Progress</h1>
+        <p className="text-[var(--app-text-secondary)] select-none">Track your Quran reading journey</p>
       </motion.div>
 
       {/* Main Stats */}
@@ -139,13 +139,13 @@ export default function Stats() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className={`${stat.bg} rounded-2xl p-5 border border-slate-100 dark:border-slate-700`}
+            className={`${stat.bg} rounded-2xl p-5 border border-[var(--app-card-border)]`}
           >
             <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-3`}>
               <stat.icon className="w-5 h-5 text-white" />
             </div>
-            <p className="text-2xl font-bold text-slate-800 dark:text-white select-none">{stat.value}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400 select-none">{stat.label}</p>
+            <p className="text-2xl font-bold text-[var(--app-text-primary)] select-none">{stat.value}</p>
+            <p className="text-sm text-[var(--app-text-secondary)] select-none">{stat.label}</p>
           </motion.div>
         ))}
       </div>
@@ -155,14 +155,14 @@ export default function Stats() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-100 dark:border-slate-700 mb-8"
+        className="bg-[var(--app-card-bg)] rounded-2xl p-6 border border-[var(--app-card-border)] mb-8"
       >
         <div className="flex items-center justify-between mb-6 select-none">
           <div>
-            <h2 className="text-lg font-semibold text-slate-800 dark:text-white">This Week</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Verses read per day</p>
+            <h2 className="text-lg font-semibold text-[var(--app-text-primary)]">This Week</h2>
+            <p className="text-sm text-[var(--app-text-secondary)]">Verses read per day</p>
           </div>
-          <TrendingUp className="w-5 h-5 text-violet-500" />
+          <TrendingUp className="w-5 h-5 text-[var(--app-accent)]" />
         </div>
 
         <div className="flex items-end justify-between gap-2 h-32">
@@ -175,13 +175,13 @@ export default function Stats() {
                   transition={{ delay: 0.5 + index * 0.05, duration: 0.4 }}
                   className={`w-full rounded-t-lg ${
                     day.isToday 
-                      ? 'bg-gradient-to-t from-violet-500 to-purple-400' 
+                      ? 'bg-[image:var(--app-accent-gradient)]' 
                       : 'bg-slate-200 dark:bg-slate-600'
                   }`}
                   style={{ minHeight: '4px' }}
                 />
               </div>
-              <span className={`text-xs ${day.isToday ? 'text-violet-600 dark:text-violet-400 font-semibold' : 'text-slate-400'} select-none`}>
+              <span className={`text-xs ${day.isToday ? 'text-[var(--app-accent)] font-semibold' : 'text-slate-400'} select-none`}>
                 {day.day}
               </span>
             </div>
@@ -191,8 +191,8 @@ export default function Stats() {
         {/* Goal line */}
         <div className="relative mt-4">
           <div className="flex items-center gap-2">
-            <div className="h-px flex-1 bg-violet-300 dark:bg-violet-600" style={{ opacity: 0.5 }} />
-            <span className="text-xs text-violet-500 dark:text-violet-400 select-none">
+            <div className="h-px flex-1" style={{ background: 'var(--app-accent)', opacity: 0.4 }} />
+            <span className="text-xs text-[var(--app-accent)] select-none">
               Daily goal: {progress?.daily_goal_verses || 10} verses
             </span>
           </div>
@@ -205,7 +205,7 @@ export default function Stats() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
       >
-        <h2 className="text-lg font-semibold text-slate-800 dark:text-white mb-4 select-none">Achievements</h2>
+        <h2 className="text-lg font-semibold text-[var(--app-text-primary)] mb-4 select-none">Achievements</h2>
         <div className="grid grid-cols-2 gap-3">
           {achievements.map((achievement, index) => (
             <motion.div
@@ -215,21 +215,21 @@ export default function Stats() {
               transition={{ delay: 0.6 + index * 0.1 }}
               className={`rounded-2xl p-4 border ${
                 achievement.unlocked 
-                  ? 'bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/30 dark:to-purple-900/30 border-violet-200 dark:border-violet-700' 
-                  : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 opacity-60'
+                  ? 'bg-[var(--app-accent-soft)] border-[var(--app-card-border)]' 
+                  : 'bg-[var(--app-card-bg-alt)] border-[var(--app-card-border)] opacity-60'
               }`}
             >
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2 ${
                 achievement.unlocked 
-                  ? 'bg-gradient-to-br from-violet-500 to-purple-600' 
+                  ? 'bg-[image:var(--app-accent-gradient)]' 
                   : 'bg-slate-300 dark:bg-slate-600'
               }`}>
                 <achievement.icon className={`w-5 h-5 ${achievement.unlocked ? 'text-white' : 'text-slate-500'}`} />
               </div>
-              <p className={`font-semibold text-sm ${achievement.unlocked ? 'text-slate-800 dark:text-white' : 'text-slate-500 dark:text-slate-400'} select-none`}>
+              <p className={`font-semibold text-sm ${achievement.unlocked ? 'text-[var(--app-text-primary)]' : 'text-[var(--app-text-secondary)]'} select-none`}>
                 {achievement.title}
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 select-none">{achievement.value}</p>
+              <p className="text-xs text-[var(--app-text-secondary)] select-none">{achievement.value}</p>
             </motion.div>
           ))}
         </div>

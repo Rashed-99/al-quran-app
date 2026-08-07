@@ -686,7 +686,7 @@ export default function Reading() {
             {verse.transliteration && (
               <div
                 className="rounded-2xl px-5 py-4 mb-4"
-                style={{ background: 'var(--app-card-bg)', border: '1px solid var(--app-card-border)' }}
+                style={{ background: 'var(--app-card-bg)', border: '1px solid var(--app-card-border)', boxShadow: 'var(--app-shadow-card)' }}
               >
                 <p
                   className="text-left italic select-none leading-relaxed"
@@ -704,7 +704,7 @@ export default function Reading() {
                 "meaning" section rather than looking identical to it. */}
             <div
               className="rounded-2xl px-5 py-4 mb-4"
-              style={{ background: 'var(--app-accent-soft)', border: '1px solid var(--app-card-border)' }}
+              style={{ background: 'var(--app-accent-soft)', border: '1px solid var(--app-card-border)', boxShadow: 'var(--app-shadow-card)' }}
             >
               <p
                 className="text-center leading-relaxed select-none"

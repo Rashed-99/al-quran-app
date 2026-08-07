@@ -50,13 +50,13 @@ export default function ResetPassword() {
   if (!token) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(180deg, #2a1a4a 0%, #1a1230 45%, #121212 100%)' }}>
-        <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-2xl text-center space-y-3">
+        <div className="w-full max-w-sm bg-[var(--app-card-bg)] rounded-3xl p-6 shadow-2xl text-center space-y-3">
           <AlertCircle className="w-10 h-10 text-rose-500 mx-auto" />
           <p className="text-slate-700 dark:text-slate-200 font-medium">Invalid reset link</p>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-[var(--app-text-secondary)]">
             This link is missing its reset token. Please request a new one.
           </p>
-          <Link to="/forgot-password" className="inline-block text-violet-500 font-medium hover:text-violet-400">
+          <Link to="/forgot-password" className="inline-block text-[var(--app-accent)] font-medium hover:text-violet-400">
             Request a new link
           </Link>
         </div>
@@ -72,20 +72,20 @@ export default function ResetPassword() {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 rounded-3xl bg-[image:var(--app-accent-gradient)] flex items-center justify-center mx-auto mb-4 shadow-lg">
             <BookOpen className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-white">Set a new password</h1>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-2xl">
+        <div className="bg-[var(--app-card-bg)] rounded-3xl p-6 shadow-2xl">
           {done ? (
             <div className="text-center py-4 space-y-3">
               <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
               </div>
               <p className="text-slate-700 dark:text-slate-200 font-medium">Password updated</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Redirecting you to sign in…</p>
+              <p className="text-sm text-[var(--app-text-secondary)]">Redirecting you to sign in…</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -134,7 +134,7 @@ export default function ResetPassword() {
               <Button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-violet-600 hover:bg-violet-700 rounded-xl py-6 touch-manipulation disabled:opacity-60"
+                className="w-full bg-[var(--app-accent)] hover:opacity-90 rounded-xl py-6 touch-manipulation disabled:opacity-60"
               >
                 {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Update Password'}
               </Button>
